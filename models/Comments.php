@@ -64,4 +64,9 @@ class Comments extends \yii\db\ActiveRecord
             'date' => 'Date',
         ];
     }
+     public function getPost()
+    {
+        return $this->hasOne(Post::className(), ['id' => 'post_id']);
+    }
+
 }

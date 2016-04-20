@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'columns' => [
             //'id',
-            'post_id',
+            'post.title',
             'auth_nick',
             //'auth_email:email',
             'title',

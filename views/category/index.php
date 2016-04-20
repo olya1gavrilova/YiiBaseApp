@@ -8,7 +8,7 @@ use yii\data\Pagination;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Categories';
+$this->title = 'Категории';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-index">
@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if(Yii::$app->user->can('category-create')):?>
     <p>
-        <?= Html::a('Create Category', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать категорию', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 <?php endif?>
     <use yii\data\Pagination;

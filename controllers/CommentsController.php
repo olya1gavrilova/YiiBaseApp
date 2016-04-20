@@ -38,6 +38,7 @@ class CommentsController extends Controller
 
                 return $this->render('index', [
                     'dataProvider' => $dataProvider,
+                    'posts'=>Post::find()->all()
                 ]);
          }
         else{
