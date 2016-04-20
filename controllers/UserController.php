@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 
 use app\models\Post;
+use app\models\Comments;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\Assignments;
@@ -22,26 +23,10 @@ use yii\web\Session;
  */
 class UserController extends Controller
 {
-
-
- /*   public function behaviors()
-    {
-
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
-    */
-
     /**
         Просмотр всех пользователей
      */
-    public function actionAll()
+    public function actionIndex()
     {
         $user=new User;
 
@@ -51,7 +36,7 @@ class UserController extends Controller
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $dataProvider->pagination->pageSize=5;
 
-            return $this->render('all', [
+            return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
@@ -62,7 +47,7 @@ class UserController extends Controller
     }
 
     //просмотр своей записи
-      public function actionIndex($id)
+      public function actionView($id)
     {
         $user= new User;
 
@@ -71,10 +56,12 @@ class UserController extends Controller
                 $model = $this->findModel($id);
                 $role=Assignments::find()->where(['user_id'=>$id])->one();
                 $posts=Post::find()->where(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
-                return $this->render('index', [
+                $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
+                return $this->render('view', [
                     'model' => $model,
                     'role' => $role,
                     'posts' => $posts,
+                    'comments'=>$comments,
                 ]);
             }
 
@@ -89,30 +76,47 @@ class UserController extends Controller
      * @param integer $id
      * @return mixed
      */
-   /* public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }*/
+ 
 
     /**
      * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-   /* public function actionCreate()
+    public function actionCreate()
     {
-        $model = new User();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+     if (!\Yii::$app->user->isGuest) {
+            return $this->goHome();
         }
-    }*/
+
+        $model = new User();
+        
+        $assignments= new Assignments();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if(User::find()->where(['username'=>$model->username])->one())
+            {
+               $this->render('signup', [
+                'model' => $model,
+            ]); 
+            }
+            else{
+            $model->access_token=$model->tokenGenerator();
+            $model->password=md5($model->password);
+            $model->validate();
+            $model->save();
+
+            $id=User::findIdentityByAccessToken($model->access_token)->id;
+            $assignments->user_id=$id;
+            $assignments->item_name='user';
+            $assignments->save();
+            return $this->redirect(['../site/login']);
+            }
+        }
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
 
     /**
      * Updates an existing User model.

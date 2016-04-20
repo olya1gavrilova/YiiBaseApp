@@ -7,6 +7,10 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->title = 'Изменение пароля';
+$this->params['breadcrumbs'][] = ['label' => Yii::$app->user->identity->username, 'url' => ['view', 'id' => Yii::$app->user->identity->id]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="user-form col-md-6">

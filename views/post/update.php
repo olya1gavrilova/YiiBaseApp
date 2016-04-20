@@ -2,13 +2,14 @@
 
 use yii\helpers\Html;
 
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Post */
 
-$this->title = 'Update Post: ' . ' ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
+$this->title = 'Обновить пост: ' . ' ' . $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Посты ', 'url' => ['/post/list']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = "Обновить";
 ?>
 <div class="post-update">
 

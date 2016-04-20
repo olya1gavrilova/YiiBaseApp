@@ -1,43 +1,42 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\grid\GridView;
 
+use yii\widgets\LinkPager;
 /* @var $this yii\web\View */
-/* @var $model app\models\Comments */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Comments', 'url' => ['index']];
+$this->title = 'Comments';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="comments-view">
+<div class="comments-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Create Comments', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
+     
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => [
             'id',
             'post_id',
             'auth_nick',
             'auth_email:email',
             'title',
-            'text:ntext',
-            'short_text',
+            // 'text:ntext',
+            // 'short_text',
             'status',
-            'date',
+            // 'date',
+
+            ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]) ?>
+    ]); ?>
+
+     
 
 </div>

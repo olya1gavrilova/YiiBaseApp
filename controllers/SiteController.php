@@ -91,43 +91,6 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-
-    public function actionSignup()
-    {
-        if (!\Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new User();
-        
-        $assignments= new Assignments();
-
-        if ($model->load(Yii::$app->request->post())) {
-            if(User::find()->where(['username'=>$model->username])->one())
-            {
-               $this->render('signup', [
-                'model' => $model,
-            ]); 
-            }
-            else{
-            $model->access_token=$model->tokenGenerator();
-            $model->password=md5($model->password);
-            $model->validate();
-            $model->save();
-
-            $id=User::findIdentityByAccessToken($model->access_token)->id;
-            $assignments->user_id=$id;
-            $assignments->item_name='user';
-            $assignments->save();
-            return $this->redirect(['login']);
-            }
-        }
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
-    }
-
-
     public function actionContact()
     {
         $model = new ContactForm();
