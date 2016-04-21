@@ -13,6 +13,7 @@ use app\models\Post;
 
 use yii\helpers\StringHelper;
 use app\models\Comments;
+use app\components\AlertWidget;
 
 AppAsset::register($this);
 ?>
@@ -46,7 +47,7 @@ AppAsset::register($this);
                ['label'=>'']
             ):
             (
-                ['label' => 'Личный кабинет', 'url' => ['/user/index?id='.Yii::$app->user->identity->id]]
+                ['label' => 'Личный кабинет', 'url' => ['/user/view', 'id'=>Yii::$app->user->identity->id]]
                 ),
             ['label' => 'Главная', 'url' => ['/site/index']],
             ['label' => 'Посты', 'url' => ['/post/list']],
@@ -106,7 +107,7 @@ AppAsset::register($this);
                 <?= Breadcrumbs::widget([
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ]) ?>
-
+                <?=AlertWidget::widget()?>
                 <?= $content ?>
         </div><!--end right-->
     </div>

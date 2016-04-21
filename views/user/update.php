@@ -10,10 +10,10 @@ use app\models\User;
 $this->title = 'Update User: ' . ' ' . $model->id;
 
 if(Yii::$app->user->can('user-update') ):
-	$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+	$this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
 endif;
 
-$this->params['breadcrumbs'][] = ['label' => $model->username, 'url' => ['index', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->username, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Редактировать';
 ?>
 <div class="user-update">

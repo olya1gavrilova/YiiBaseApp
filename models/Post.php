@@ -74,11 +74,18 @@ class Post extends \yii\db\ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(TblCategory::className(), ['id' => 'category_id']);
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
     
     public function isAuthor($id){
            return Post::find()->where(['id'=>$id])->one()->author_id===Yii::$app->user->id ? true: false;
+    }
+
+    //время публикации в сутках
+     public function isPublished($limit){
+        if( (time()-Yii::$app->formatter->asTimestamp($this->publish_date)) < ($limit*60*60*24)){
+            return true;
+        }
     }
 }

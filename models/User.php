@@ -42,6 +42,7 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
             [['last_name', 'first_name', 'username', ], 'required','on' => 'update'],
             [['last_name', 'first_name'], 'string', 'max' => 45],
             [['username'], 'string', 'max' => 15],
+            ['username', 'unique', 'message'=>'Этот никнейм уже занят'],
             [['password', 'auth_key', 'access_token'], 'string', 'max' => 32],
 
             [['currentPassword', 'newPassword', 'newPasswordConfirm', ], 'required','on' => 'change_password'],
@@ -54,11 +55,8 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
 
     public function validateCurrentPassword()
     {
-        if($this->currentPassword===$this->findIdentity(['username'=>Yii::$app->user->identity->username])->password){
-            return true;
-        }
-        else {
-            return false;
+        if(md5($this->currentPassword)!==User::findIdentity(['username'=>Yii::$app->user->identity->username])->password){
+           $this->addError('currentPassword', 'Неверно введен текущий пароль');
         }
     }
 

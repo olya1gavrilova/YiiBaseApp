@@ -38,12 +38,12 @@ class PostController extends Controller
      * @return mixed
      */
 
-    //вывод всех постов данного конкретного автора
+    //вывод всех опубликованных постов 
     //ДЛЯ ЛИСТА ИСПОЛЬЗУЕТСЯ ШАБЛОН ИНДЕКС!!!!
     public function actionList()
     {
         $pagination=new Pagination([
-                    'defaultPageSize'=>15,
+                    'defaultPageSize'=>10,
                     'totalCount'=>Post::find() ->where(['publish_status'=>'publish'])->count(),
                 ]);
 
@@ -54,7 +54,7 @@ class PostController extends Controller
                     ->orderBy('publish_date DESC')
                     ->all();
 
-         return $this->render('index', [
+         return $this->render('all', [
                     'posts' => $posts,
                     'pagination'=>$pagination,
                     'user' =>$user,
@@ -63,7 +63,8 @@ class PostController extends Controller
 
     }
 
-    public function actionIndex($id)
+    ///все посты конкретного автора
+    public function actionAll($id)
     {   
         $user=new User;
         $isauthor=$user->isAuthor($id);
@@ -101,7 +102,7 @@ class PostController extends Controller
                 $author=User::find()->where(['id'=>$id])->one()->username;
 
 
-                return $this->render('index', [
+                return $this->render('all', [
                     'posts' => $posts,
                     'pagination'=>$pagination,
                     'user' =>$user,
@@ -115,7 +116,7 @@ class PostController extends Controller
     }
 
     //вывод всех постов  - для администратора
-     public function actionAll()
+     public function actionIndex()
     {
         if(Yii::$app->user->can('update-post') || Yii::$app->user->can('delete-post'))
         {
@@ -124,9 +125,10 @@ class PostController extends Controller
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
              $dataProvider->pagination->pageSize=8;
 
-            return $this->render('all', [
+            return $this->render('index', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider, 
+                'category'=>Category::find()->all(),
                             
             ]);
         }

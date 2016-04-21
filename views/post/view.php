@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['post/list'
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
+    <?=$date?>
 
    <h1><?=$model->title?></h1>
         Автор: <?=Html::a($author,['index', 'id'=> $model->author_id])?>
