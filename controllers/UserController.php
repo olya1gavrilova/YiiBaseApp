@@ -136,6 +136,7 @@ class UserController extends Controller
             if ($model->load(Yii::$app->request->post()) && $model->validate())
             {
                 $model->save();
+                Yii::$app->session->setFlash('success','Данные пользователя изменены');
                 return $this->redirect(['update', 'id' => $model->id]);
             }
             else {
@@ -203,11 +204,12 @@ class UserController extends Controller
           {
             $user->password=md5($user->newPassword);
             $user->save(false);
-            
-            return $this->redirect(['update', 'id'=>$user->id]);
+           Yii::$app->session->setFlash('success', 'Данные пользователя успешно изменены');
+            return $this->redirect('change_password');
           }
 
           else{
+           
             return $this->render('change_password',['user'=>$user]);
           }
     }

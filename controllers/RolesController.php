@@ -70,6 +70,8 @@ class RolesController extends Controller
                     $assignment->user_id=$key;
                     $assignment->item_name=$value;
                     $assignment->insert();
+
+                    Yii::$app->session->setFlash('success', 'данные успешно изменены');
                     
                 }
            $_POST['roles']="";

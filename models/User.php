@@ -54,11 +54,8 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
 
     public function validateCurrentPassword()
     {
-        if($this->currentPassword===$this->findIdentity(['username'=>Yii::$app->user->identity->username])->password){
-            return true;
-        }
-        else {
-            return false;
+        if(md5($this->currentPassword)!==User::findIdentity(['username'=>Yii::$app->user->identity->username])->password){
+           $this->addError('currentPassword', 'Неверно введен текущий пароль');
         }
     }
 

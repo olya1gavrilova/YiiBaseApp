@@ -13,6 +13,7 @@ use app\models\Post;
 
 use yii\helpers\StringHelper;
 use app\models\Comments;
+use app\components\AlertWidget;
 
 AppAsset::register($this);
 ?>
@@ -106,7 +107,7 @@ AppAsset::register($this);
                 <?= Breadcrumbs::widget([
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ]) ?>
-
+                <?=AlertWidget::widget()?>
                 <?= $content ?>
         </div><!--end right-->
     </div>
