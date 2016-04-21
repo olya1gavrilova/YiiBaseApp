@@ -13,6 +13,8 @@ use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 
+use yii\data\Pagination;
+
 /**
  * RolesController implements the CRUD actions for Roles model.
  */
@@ -41,14 +43,46 @@ class RolesController extends Controller
     {
         if(Yii::$app->user->can('role-list'))
         {
+            $pagination=new Pagination([
+                    'defaultPageSize'=>10,
+                    'totalCount'=>User::find() ->count(),
+                ]);
+
+            //ищем все роли
             $roles=Roles::find()->where(['type'=> '1'])->all();
-            $users=User::find()->all();
+            //выводим юзеров
+            $users=User::find()
+            ->limit($pagination->limit)
+            ->offset($pagination->offset)
+            ->all();
+
+            //ищем все доступы
             $assignments=Assignments::find()->all();
 
+            //получаем массив значений из формы
+             $post=Yii::$app->request->post('roles');
+           if($post){
+            Assignments::deleteAll();
+            //перезаписываем данные в таблицу
+                foreach($post as $key=>$value){
+                   
+                    $assignment=new Assignments;
+                    $assignment->user_id=$key;
+                    $assignment->item_name=$value;
+                    $assignment->insert();
+                    
+                }
+           $_POST['roles']="";
+            return $this->redirect('index');
+           }
+            //
             return $this->render('index', [
                 'roles' =>$roles,
                 'users' => $users,
                 'assignments'=>$assignments,
+                'post'=>$post,
+                'pagination' =>$pagination,
+                
             ]);
         }
         else

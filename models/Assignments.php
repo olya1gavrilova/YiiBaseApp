@@ -30,8 +30,8 @@ class Assignments extends \yii\db\ActiveRecord
     {
         return [
             [['item_name', 'user_id'], 'required'],
-            [['created_at'], 'integer'],
-            [['item_name', 'user_id'], 'string', 'max' => 64]
+            [['user_id'], 'integer'],
+            [['item_name'], 'string', 'max' => 64]
         ];
     }
 

@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
+use yii\widgets\ActiveForm;
+use yii\widgets\LinkPager;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\RolesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -19,24 +22,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Создать роль', ['create', 'id'=>'role'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <!-- GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'name',
-            'type',
-            'description:ntext',
-            'rule_name',
-            'data:ntext',
-            // 'created_at',
-            // 'updated_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); -->
+    
     <table class="table table-hover">
+    <?print_r($post)?>
+    <?print_r($k)?>
+    <?print_r($v)?>
         <tr>
         <td><td>
         <?php foreach ($roles as $role):?>
@@ -48,21 +38,29 @@ $this->params['breadcrumbs'][] = $this->title;
             <td>
         <?php endforeach?>
         </tr>
+        <?php $form = ActiveForm::begin(); ?>
+
         <?php foreach ($users as $user):?>
             <tr>
-                <td><?=Html::a($user->username, ['../user/index','id'=>$user->id])?></a><td>
+                <td><?=Html::a($user->username, ['../user/view','id'=>$user->id])?></a><td>
               
              <?php foreach ($roles as $role):?>
-                    <td><?php foreach ($assignments as $key):?>
+                    <td>
+                        <input type="checkbox" value="<?=$role->name?>" name="roles[<?=$user->id?>]";
+                    <?php foreach ($assignments as $key):?>
                           <?php if($key->item_name ===$role->name && $key->user_id==$user->id):?>
-                                ok
+                               checked
                           <?php endif?>
                         <?php endforeach?>
-                    <td>
+                    ><td>
             <?php endforeach?>
              </tr> 
         <?php endforeach?>
 
-    </table>
+        </table>
+        <?=Html::submitButton('Сохранить',['class'=>'btn btn-success'])?>
 
+        <?php ActiveForm::end(); ?>
+    
+         <?= LinkPager::widget(['pagination' => $pagination]) ?>
 </div>
