@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
               
              <?php foreach ($roles as $role):?>
                     <td>
-                        <input type="checkbox" value="<?=$role->name?>" name="roles[<?=$user->id?>]";
+                        <input type="radio" value="<?=$role->name?>" name="roles[<?=$user->id?>]";
                     <?php foreach ($assignments as $key):?>
                           <?php if($key->item_name ===$role->name && $key->user_id==$user->id):?>
                                checked

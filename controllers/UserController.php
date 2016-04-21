@@ -92,13 +92,14 @@ class UserController extends Controller
         $model = new User();
         
         $assignments= new Assignments();
-
+        
         if ($model->load(Yii::$app->request->post())) {
+
             if(User::find()->where(['username'=>$model->username])->one())
             {
-               $this->render('signup', [
-                'model' => $model,
-            ]); 
+                 $this->render('create', [
+                          'model' => $model,
+                  ]); 
             }
             else{
             $model->access_token=$model->tokenGenerator();
@@ -111,7 +112,7 @@ class UserController extends Controller
             $assignments->item_name='user';
             $assignments->save();
             return $this->redirect(['../site/login']);
-            }
+           }
         }
         return $this->render('create', [
             'model' => $model,
