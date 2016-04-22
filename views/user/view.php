@@ -13,65 +13,94 @@ $this->title = 'Пользователь '.$model->username;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
-
-    <?php if (Yii::$app->user->can('enter-admin')):?>
-        <?=Html::a('Управление ролями', '/roles/index', ['class' => 'btn btn-info'])?>
-     <?php endif?>
-
-
-     <?php if (Yii::$app->user->can('delete-post') || Yii::$app->user->can('update-post')):?>
-        <?=Html::a('Управление постами', '/post/index', ['class' => 'btn btn-info'])?>
-    <?php endif?>
-
-
-    <?php if (Yii::$app->user->can('comment-list')):?>
-        <?=Html::a('Управление комментариями', '/comments/index', ['class' => 'btn btn-info '])?>
-     <?php endif?>
-
-      <?php if (Yii::$app->user->can('category-create')):?>
-        <?=Html::a('Создать категорию', '/category/create', ['class' => 'btn btn-info'])?>
-     <?php endif?>
-
-     <?php if (Yii::$app->user->can('user-update')):?>
-        <?=Html::a('Все пользователи', '/user/index', ['class' => 'btn btn-info'])?>
-     <?php endif?>
-
-    
-
-
     <h1><?= Html::encode($this->title) ?></h1>
-    <table class='table table-bordered'>
-        <tr>
-            <td>Имя</td>
-            <td><?=$model->first_name?></td>
-        </tr>
-        <tr>
-            <td>Фамилия</td>
-            <td><?=$model->last_name?></td>
-        </tr>
-        <tr>
-            <td>Имя</td>
-            <td><?=$model->username?></td>
-        </tr>
-        <tr>
-            <td>E-mail</td>
-            <td></td>
-        </tr>
-    
-    <?php if (Yii::$app->user->can('role-update')):?>
-        <tr>
-            <td>Статус</td>
-            <td>
-            
 
-            <?=$role->item_name?>
-           
-            </td>
-        </tr>
-    <?php endif?>
-    </table>
-    <?=Html::a('Редактировать данные', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])?>
-    <br /><hr />
+    <div class='row'> 
+      <?php if (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list')):?>
+        <div class='col-md-6'>
+        <h2>Функции</h2>
+        <table class='table table-bordered'>
+            <?php if (Yii::$app->user->can('menu-access')):?>
+            <tr>
+                <td>Редактирование меню</td>
+                <td><?=Html::a('Перейти', '/menu/index', ['class' => 'btn btn-info'])?></td>
+            </tr>
+            <?php endif?> 
+
+            <?php if (Yii::$app->user->can('role-list')):?>
+            <tr>
+                <td>Управление ролями</td>
+                <td><?=Html::a('Перейти', '/roles/index', ['class' => 'btn btn-info'])?></td>
+            </tr>
+          <?php endif?>  
+          <?php if (Yii::$app->user->can('delete-post') || Yii::$app->user->can('update-post')):?>  
+            <tr>
+                <td>Управление постами</td>
+                <td><?=Html::a('Перейти', '/post/index', ['class' => 'btn btn-info'])?></td>
+            </tr>
+           <?php endif?> 
+           <?php if (Yii::$app->user->can('comment-list')):?>
+            <tr>
+                <td>Управление комментариями</td>
+                <td><?=Html::a('Перейти', '/comments/index', ['class' => 'btn btn-info '])?></td>
+            </tr>
+            <?php endif?>
+            <?php if (Yii::$app->user->can('category-update')):?>
+            <tr>
+                <td>Создать категорию</td>
+                <td><?=Html::a('Перейти', '/category/create', ['class' => 'btn btn-info'])?></td>
+            </tr>
+            <?php endif?>
+            <?php if (Yii::$app->user->can('user-update')):?>
+            <tr>
+                <td>Все пользователи</td>
+                <td><?=Html::a('Перейти', '/user/index', ['class' => 'btn btn-info'])?></td>
+            </tr>
+            <?php endif?>
+         </table> 
+         </div>
+     <?php endif?>
+
+
+            <div class='col-md-6'>
+            <h2>Данные</h2>   
+            <table class='table table-bordered'>
+                <tr>
+                    <td>Имя</td>
+                    <td><?=$model->first_name?></td>
+                </tr>
+                <tr>
+                    <td>Фамилия</td>
+                    <td><?=$model->last_name?></td>
+                </tr>
+                <tr>
+                    <td>Имя</td>
+                    <td><?=$model->username?></td>
+                </tr>
+                <tr>
+                    <td>E-mail</td>
+                    <td></td>
+                </tr>
+            
+            <?php if (Yii::$app->user->can('role-update')):?>
+                <tr>
+                    <td>Статус</td>
+                    <td>
+                    
+
+                    <?=$role->item_name?>
+                   
+                    </td>
+                </tr>
+            <?php endif?>
+            </table>
+               
+             <?=Html::a('Редактировать данные', ['update', 'id' => $model->id], ['class' => 'btn btn-primary col-md-offset-2'])?>
+            
+            </div>
+        </div>
+
+    
 
 
     <h2>Посты</h2>

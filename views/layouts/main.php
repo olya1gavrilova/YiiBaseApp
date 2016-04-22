@@ -13,6 +13,7 @@ use app\models\Post;
 
 use yii\helpers\StringHelper;
 use app\models\Comments;
+use app\models\Menu;
 use app\components\AlertWidget;
 
 AppAsset::register($this);
@@ -38,34 +39,22 @@ AppAsset::register($this);
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
+        
     ]);
+        $items=[];
+         $items[]=['label' => 'Личный кабинет', 'url' => ['user/view', 'id'=>Yii::$app->user->identity->id], 'visible' => !Yii::$app->user->isGuest];
+         foreach (Menu::find()->all() as $menu) {
+             $items[]= ['label' => $menu->menu_item, 'url' => $menu->menu_url];
+        }
+        $items[]=['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest];
+        $items[]=['label' => 'Logout', 'url' => ['site/logout'],'class' => 'btn btn-link', 'visible' => !Yii::$app->user->isGuest];
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            Yii::$app->user->isGuest ? 
-            ( 
-               ['label'=>'']
-            ):
-            (
-                ['label' => 'Личный кабинет', 'url' => ['/user/view', 'id'=>Yii::$app->user->identity->id]]
-                ),
-            ['label' => 'Главная', 'url' => ['/site/index']],
-            ['label' => 'Посты', 'url' => ['/post/list']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Вход', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items'=>$items, 
+        
     ]);
+   
     NavBar::end();
     ?>
 

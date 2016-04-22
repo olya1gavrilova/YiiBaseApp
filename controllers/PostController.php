@@ -145,11 +145,10 @@ class PostController extends Controller
     {
         $post= new Post;
         $model=$this->findModel($id);
-
+     
         if(Yii::$app->user->can('post-draft-view') || $post->isAuthor($id) || $model->publish_status==='publish')
         {
            
-             
             $pagination=new Pagination([
                 'defaultPageSize'=>5,
                 'totalCount'=>Comments::find()
@@ -167,7 +166,6 @@ class PostController extends Controller
 
             $author=User::find()->where(['id'=>$model->author_id])->one();
 
-     
 
             return $this->render('view', [
                 'model' => $model,
@@ -175,6 +173,7 @@ class PostController extends Controller
                 'pagination'=>$pagination,
                 'ok'=>Yii::$app->request->get('ok'),
                 'author'=>$author->username,
+                
 
             ]);
          }
