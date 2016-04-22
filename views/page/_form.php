@@ -3,23 +3,22 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-use yii\helpers\ArrayHelper;
-use app\models\MenuType;
-
 /* @var $this yii\web\View */
-/* @var $model app\models\Menu */
+/* @var $model app\models\Pages */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="menu-form">
+<div class="pages-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'menu_item')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'menu_url')->textInput(['maxlength' => true]) ?>
+    <?//= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'type')->dropDownList(ArrayHelper::map(MenuType::find()->all(), 'id', 'menu_type')) ?>
+    <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
+
+    <?= $form->field($model, 'meta_description')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -10,6 +10,7 @@ use Yii;
  * @property integer $menu_id
  * @property string $menu_item
  * @property string $menu_url
+ * @property integer $type
  */
 class Menu extends \yii\db\ActiveRecord
 {
@@ -27,7 +28,8 @@ class Menu extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['menu_item', 'menu_url'], 'required'],
+            [['menu_item', 'menu_url', 'type'], 'required'],
+            [['type'], 'integer'],
             [['menu_item'], 'string', 'max' => 20],
             [['menu_url'], 'string', 'max' => 255]
         ];
@@ -42,6 +44,12 @@ class Menu extends \yii\db\ActiveRecord
             'menu_id' => 'Menu ID',
             'menu_item' => 'Menu Item',
             'menu_url' => 'Menu Url',
+            'type' => 'Type',
         ];
+    }
+
+    public function getMenuType()
+    {
+        return $this->hasOne(MenuType::className(), ['id' => 'type']);
     }
 }

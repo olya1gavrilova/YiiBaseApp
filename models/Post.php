@@ -39,7 +39,7 @@ class Post extends \yii\db\ActiveRecord
             [['anons', 'content', 'publish_status'], 'string'],
             [['category_id', 'author_id'], 'integer'],
             [['publish_date'], 'safe'],
-            [['title'], 'string', 'max' => 255]
+            [['title'], 'string', 'max' => 255],
         ];
     }
 

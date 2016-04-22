@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 22 2016 г., 12:47
+-- Время создания: Апр 22 2016 г., 18:53
 -- Версия сервера: 5.5.41-log
 -- Версия PHP: 5.6.3
 
@@ -87,6 +87,7 @@ INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `cr
 ('menu-access', 2, 'Доступ к редактированию меню', NULL, NULL, NULL, NULL),
 ('moder-junior', 1, 'Младший модератор', NULL, NULL, NULL, NULL),
 ('moderator', 1, 'Модератор', NULL, NULL, NULL, NULL),
+('page-control', 2, 'Работа с обычными страницами', NULL, NULL, NULL, NULL),
 ('post-draft-view', 2, 'Читать неопубликованные посты', NULL, NULL, NULL, NULL),
 ('role-create', 2, 'Создание ролей и прав', NULL, NULL, NULL, NULL),
 ('role-list', 2, 'Список прав пользователей', NULL, NULL, NULL, NULL),
@@ -132,6 +133,7 @@ INSERT INTO `auth_item_child` (`parent`, `child`) VALUES
 ('admin', 'enter-admin'),
 ('admin', 'menu-access'),
 ('admin', 'moderator'),
+('admin', 'page-control'),
 ('admin', 'post-draft-view'),
 ('admin', 'role-create'),
 ('admin', 'role-list'),
@@ -265,17 +267,72 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `menu_id` int(10) NOT NULL AUTO_INCREMENT,
   `menu_item` varchar(20) NOT NULL,
   `menu_url` varchar(255) NOT NULL,
+  `type` int(10) NOT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Дамп данных таблицы `menu`
 --
 
-INSERT INTO `menu` (`menu_id`, `menu_item`, `menu_url`) VALUES
-(1, 'Главная', 'site/index'),
-(2, 'Посты', 'post/list'),
-(3, 'О Компании', 'site/about');
+INSERT INTO `menu` (`menu_id`, `menu_item`, `menu_url`, `type`) VALUES
+(1, 'Главная', 'site/index', 1),
+(2, 'Посты', 'post/list', 1),
+(3, 'О Компании', 'site/about', 1),
+(4, 'Тест', 'site/about', 2),
+(5, 'Test2', 'site/logout', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `menu_type`
+--
+
+CREATE TABLE IF NOT EXISTS `menu_type` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `menu_type` varchar(24) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Дамп данных таблицы `menu_type`
+--
+
+INSERT INTO `menu_type` (`id`, `menu_type`) VALUES
+(1, 'main'),
+(2, 'aside');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `pages`
+--
+
+CREATE TABLE IF NOT EXISTS `pages` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `title` varchar(48) NOT NULL,
+  `url` varchar(120) NOT NULL,
+  `text` text NOT NULL,
+  `meta_description` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url` (`url`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+
+--
+-- Дамп данных таблицы `pages`
+--
+
+INSERT INTO `pages` (`id`, `title`, `url`, `text`, `meta_description`) VALUES
+(2, 'Новый заголовок', '', 'Медиаплан, на первый взгляд, директивно детерминирует конвергентный медиаплан. Разработка медиаплана изоморфна времени. Выставка транслирует анализ зарубежного опыта. Потребление, отбрасывая подробности, как всегда непредсказуемо. Такое понимание ситуации восходит к Эл Райс, при этом нестандартный подход транслирует побочный PR-эффект.\r\n\r\nОбщество потребления усиливает медиамикс. Правда, специалисты отмечают, что план размещения одновременно индуцирует бюджет на размещение. По мнению ведущих маркетологов, CTR индуцирует комплексный анализ ситуации, работая над проектом. Рекламная кампания нейтрализует формат события. Формат события усиливает отраслевой стандарт. Конкурентоспособность обуславливает конвергентный ребрендинг, учитывая результат предыдущих медиа-кампаний.\r\n\r\nВоздействие на потребителя восстанавливает инвестиционный продукт. А вот по мнению аналитиков презентационный материал сбалансирован. Поэтому построение бренда транслирует тактический рейтинг, учитывая современные тенденции. Итак, ясно, что продуктовый ассортимент осмысленно масштабирует побочный PR-эффект, признавая определенные рыночные тенденции. Создание приверженного покупателя экономит конструктивный презентационный материал.', 'фвафаы фвфвыа'),
+(3, 'Новый заголовок', 'novyj_zagolovok', 'Новый текст', 'фывафыва'),
+(4, 'Новый заголовок 2 admin', 'novyj-zagolovok-2-admin', 'asdadf adfasdfadfs dafadfadfs adfadsfadsf', 'asdasdfadsf adsfasdfafsd adfasdf'),
+(16, 'Новый заголовок 2', 'novyj-zagolovok-2', 'dafadfadadf adadf', 'adfadsfdasfadfsdafs'),
+(17, 'один', 'odin', 'фывафва', 'фывафыва'),
+(18, 'одинодин', 'одинодин', 'ФЫВвы', 'ФфывФВЫ'),
+(19, 'ФЫВА', 'fyva-2', 'ФЫВА', 'ФЫВА'),
+(20, 'один', 'odin-2', 'фвыафвыа вфыафваы', 'фвафвыа выаффвыафваы'),
+(21, 'один', '20', 'йцуфафав фвафавыфваы ', 'афывавфаыавыф '),
+(22, 'один', 'odin22', 'фафыва', 'фывафыафвыа');
 
 -- --------------------------------------------------------
 

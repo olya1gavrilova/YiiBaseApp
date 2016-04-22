@@ -65,8 +65,7 @@ class PostController extends Controller
 
     ///все посты конкретного автора
     public function actionAll($id)
-    {   
-        $user=new User;
+    {   $user=new User;
         $isauthor=$user->isAuthor($id);
             //делаем пагинацию
                 $pagination=new Pagination([
@@ -101,7 +100,7 @@ class PostController extends Controller
                 $user= Yii::$app->user->identity->username;
                 $author=User::find()->where(['id'=>$id])->one()->username;
 
-
+               
                 return $this->render('all', [
                     'posts' => $posts,
                     'pagination'=>$pagination,

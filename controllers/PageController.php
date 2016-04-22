@@ -3,81 +3,78 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Menu;
+use app\models\Page;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
 use yii\web\ForbiddenHttpException;
 
 /**
- * MenuController implements the CRUD actions for Menu model.
+ * PagesController implements the CRUD actions for Pages model.
  */
-class MenuController extends Controller
+class PageController extends Controller
 {
-  
-     * Lists all Menu models.
+    /**
+     * Lists all Page models.
      * @return mixed
      */
     public function actionIndex()
-    {
-        if(Yii::$app->user->can('menu-access'))
+    {   
+        if(Yii::$app->user->can('page-control'))
         {
             $dataProvider = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>1]),
-            ]);
-            $dataProvider2 = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>2]),
-            ]);
-            $dataProvider3 = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>3]),
+                'query' => Page::find(),
             ]);
 
             return $this->render('index', [
                 'dataProvider' => $dataProvider,
-                'dataProvider2' => $dataProvider2,
-                'dataProvider3' => $dataProvider3,
             ]);
         }
         else{
             throw new ForbiddenHttpException;
             
         }
-        
     }
 
     /**
-     * Displays a single Menu model.
+     * Displays a single Page model.
      * @param integer $id
      * @return mixed
      */
-  /*  public function actionView($id)
+    public function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }*/
+    }
 
     /**
-     * Creates a new Menu model.
+     * Creates a new Page model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        if(Yii::$app->user->can('menu-access'))
+        if(Yii::$app->user->can('page-control'))
         {
-            $model = new Menu();
+            $dataProvider = new ActiveDataProvider([
+                'query' => Page::find(),
+            ]);
 
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect('index');
+            $model = new Page();
+
+            if ($model->load(Yii::$app->request->post()) ) {
+               $model->url = $model->translit($model->title);
+
+                $model->save();
+                return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 return $this->render('create', [
                     'model' => $model,
                 ]);
             }
-        }
+         }
         else{
             throw new ForbiddenHttpException;
             
@@ -85,27 +82,25 @@ class MenuController extends Controller
     }
 
     /**
-     * Updates an existing Menu model.
+     * Updates an existing Page model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
-    {
-        if(Yii::$app->user->can('menu-access'))
+    {   
+        if(Yii::$app->user->can('page-control'))
         {
-                $model = $this->findModel($id);
+            $model = $this->findModel($id);
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                  return $this->redirect(['view', 'id' => $model->menu_id]);
-              } 
-            else {
-          
-                 return $this->render('update', [
-                'model' => $model,
-                 ]);
-                }
-        }
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }
+         }
         else{
             throw new ForbiddenHttpException;
             
@@ -113,35 +108,35 @@ class MenuController extends Controller
     }
 
     /**
-     * Deletes an existing Menu model.
+     * Deletes an existing Pages model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        if(Yii::$app->user->can('menu-access'))
+        if(Yii::$app->user->can('page-control'))
         {
             $this->findModel($id)->delete();
 
-             return $this->redirect(['index']);
+            return $this->redirect(['index']);
          }
-         else{
+        else{
             throw new ForbiddenHttpException;
             
         }
     }
 
     /**
-     * Finds the Menu model based on its primary key value.
+     * Finds the Pages model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Menu the loaded model
+     * @return Pages the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Menu::findOne($id)) !== null) {
+        if (($model = Page::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

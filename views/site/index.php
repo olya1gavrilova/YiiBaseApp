@@ -11,7 +11,7 @@ use app\models\Comments;
 $this->title = 'Главная';
 ?>
 <div class="site-index">
-    
+       
         <h1>Последние записи</h1>
         <?php foreach($posts as $post):?>
            
