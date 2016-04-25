@@ -54,7 +54,7 @@ class CommentsController extends Controller
      */
     public function actionView($id)
     {
-         if(Yii::$app->user->can('comment-list'))
+        if(!Yii::$app->user->isGuest)
          {
 
                 $dataProvider = new ActiveDataProvider([
@@ -66,6 +66,7 @@ class CommentsController extends Controller
 
                 return $this->render('index', [
                     'dataProvider' => $dataProvider,
+                    'id'=>$id,
                 ]);
          }
         else{
