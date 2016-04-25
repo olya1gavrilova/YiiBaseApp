@@ -57,4 +57,12 @@ return array (
       '@yii/faker' => $vendorDir . '/yiisoft/yii2-faker',
     ),
   ),
+  'vova07/imperavi' =>
+  array (
+    'name' => 'vova07/imperavi',
+    'version' => '2',
+    'alias' => array (
+        '@vova07/imperavi' => $vendorDir . '/vova07/imperavi',
+    ),
+),
 );

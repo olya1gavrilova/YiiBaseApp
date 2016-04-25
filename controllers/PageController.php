@@ -25,6 +25,9 @@ class PageController extends Controller
         {
             $dataProvider = new ActiveDataProvider([
                 'query' => Page::find(),
+                 'pagination'=>array(
+                        'pageSize'=>10,
+                      ),
             ]);
 
             return $this->render('index', [

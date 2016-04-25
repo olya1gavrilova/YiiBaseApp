@@ -17,7 +17,7 @@ use yii\web\ForbiddenHttpException;
 class MenuController extends Controller
 {
   
-     * Lists all Menu models.
+     /* Lists all Menu models.
      * @return mixed
      */
     public function actionIndex()
@@ -70,7 +70,15 @@ class MenuController extends Controller
         {
             $model = new Menu();
 
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if ($model->load(Yii::$app->request->post())) {
+
+                //проверяем первый символ урла
+                $first_symbol=mb_substr($model->menu_url,0,1);
+                if($first_symbol!=='/'){
+                      $model->menu_url ='/'.$model->menu_url;
+                }
+
+                $model->save();
                 return $this->redirect('index');
             } else {
                 return $this->render('create', [
