@@ -26,6 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=Html::a('Перейти', '/menu/index', ['class' => 'btn btn-info'])?></td>
             </tr>
             <?php endif?> 
+            <?php if (Yii::$app->user->can('page-control')):?>
+            <tr>
+                <td>Редактирование статических страниц</td>
+                <td><?=Html::a('Перейти', '/page/index', ['class' => 'btn btn-info'])?></td>
+            </tr>
+            <?php endif?> 
 
             <?php if (Yii::$app->user->can('role-list')):?>
             <tr>

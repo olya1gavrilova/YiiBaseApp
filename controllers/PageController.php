@@ -47,10 +47,15 @@ class PageController extends Controller
      */
     public function actionView($id)
     {
+        $model=Page::find()->where(['url'=>$id])->one();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'canonical'=>'<link rel="canonical" href="'.dirname(__DIR__).'/post/view/'.$model->url.'" />',
         ]);
-    }
+        /* return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);*/
+     }
 
     /**
      * Creates a new Page model.
@@ -94,7 +99,7 @@ class PageController extends Controller
     {   
         if(Yii::$app->user->can('page-control'))
         {
-            $model = $this->findModel($id);
+           $model=Page::find()->where(['url'=>$id])->one();
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -120,7 +125,8 @@ class PageController extends Controller
     {
         if(Yii::$app->user->can('page-control'))
         {
-            $this->findModel($id)->delete();
+            $model=Page::find()->where(['url'=>$id])->one();
+            $model->delete();
 
             return $this->redirect(['index']);
          }

@@ -27,8 +27,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'url:url',
            // 'text:ntext',
             'meta_description',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            
+            ['class' => 'yii\grid\ActionColumn',
+            'urlCreator'=>function($action, $model, $key, $index){
+                     return \yii\helpers\Url::to(['page/'.$action.'/'.$model->url]);
+             }
+         
+            ],
         ],
     ]); ?>
 

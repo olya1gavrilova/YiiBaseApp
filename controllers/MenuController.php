@@ -104,8 +104,16 @@ class MenuController extends Controller
         {
                 $model = $this->findModel($id);
 
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                  return $this->redirect(['view', 'id' => $model->menu_id]);
+            if ($model->load(Yii::$app->request->post())) {
+
+                $first_symbol=mb_substr($model->menu_url,0,1);
+                if($first_symbol!=='/'){
+                      $model->menu_url ='/'.$model->menu_url;
+                }
+
+                $model->save();
+
+                  return $this->redirect(['index']);
               } 
             else {
           
