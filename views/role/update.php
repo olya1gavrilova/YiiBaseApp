@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = 'Update';
 ?>
 
 	<?=Html::a('Добавить функцию',['create','id'=>'rule'],['class'=>'btn btn-success']);?>
+	<?=Html::a('Удалить функцию',['delete','id'=>'rule'],['class'=>'btn btn-warning']);?>
 
 	<h3>Родительские роли:</h3>
 	<?php foreach ($parents as $parent): ?>

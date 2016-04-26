@@ -15,6 +15,9 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\Assignments;
 use yii\base\Security;
+use app\models\Roles;
+
+
 
 use yii\web\Session;
 
@@ -57,11 +60,13 @@ class UserController extends Controller
                 $role=Assignments::find()->where(['user_id'=>$id])->one();
                 $posts=Post::find()->where(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
                 $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
+                
                 return $this->render('view', [
                     'model' => $model,
                     'role' => $role,
                     'posts' => $posts,
                     'comments'=>$comments,
+                   
                 ]);
             }
 

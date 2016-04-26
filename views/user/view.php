@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 use app\models\User;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UserSearch */
@@ -36,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php if (Yii::$app->user->can('role-list')):?>
             <tr>
                 <td>Управление ролями</td>
-                <td><?=Html::a('Перейти', '/roles/index', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', '/role/index', ['class' => 'btn btn-info'])?></td>
             </tr>
           <?php endif?>  
           <?php if (Yii::$app->user->can('delete-post') || Yii::$app->user->can('update-post')):?>  
@@ -92,10 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td>Статус</td>
                     <td>
-                    
-
-                    <?=$role->item_name?>
-                   
+                         <?=$role->item_name?>  
                     </td>
                 </tr>
             <?php endif?>
