@@ -15,6 +15,7 @@ use app\models\Comments;
 use app\models\Category;
 use app\models\User;
 use yii\helpers\StringHelper;
+use yii\base\Security;
 
 /**
  * PostController implements the CRUD actions for Post model.
@@ -261,7 +262,7 @@ class PostController extends Controller
         $post=new Post;
 
 
-        if(Yii::$app->user->can('delete-post') || $post->isAuthor($id))
+        if(Yii::$app->user->can('delete-post') || $post->isAuthor($id) )
         {
             $this->findModel($id)->delete();
 
@@ -269,6 +270,7 @@ class PostController extends Controller
         }
         else
         {
+
             throw new ForbiddenHttpException;
             
         }

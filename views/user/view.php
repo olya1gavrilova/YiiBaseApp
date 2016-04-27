@@ -6,6 +6,8 @@ use yii\grid\GridView;
 use app\models\User;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
+use app\models\Role;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UserSearch */
@@ -94,7 +96,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td>Статус</td>
                     <td>
-                         <?=$role->item_name?>  
+                        <b><?//=$role->item_name;?></b>
+
+                         <?php $form = ActiveForm::begin(); ?>
+
+                            <?=$form->field($role, 'item_name')->dropDownList(ArrayHelper::map($roles, 'name', 'description'))->label('') ?>
+                            <?= Html::submitButton( 'Назначить новую роль',['class' => 'btn btn-warning']) ?>
+
+                         <?php ActiveForm::end(); ?>
                     </td>
                 </tr>
             <?php endif?>

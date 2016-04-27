@@ -15,7 +15,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\Assignments;
 use yii\base\Security;
-use app\models\Roles;
+use app\models\Role;
 
 
 
@@ -57,13 +57,24 @@ class UserController extends Controller
         if(Yii::$app->user->can('all-users') || $user->isAuthor($id))
             {
                 $model = $this->findModel($id);
-                $role=Assignments::find()->where(['user_id'=>$id])->one();
+                $role=Assignments::findOne(['user_id'=>$id]);
                 $posts=Post::find()->where(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
                 $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
+                $roles=Role::find()->where(['type'=>1])->all();
                 
+                if(Yii::$app->request->post()){
+                    Assignments::deleteAll(['user_id'=>$id]);
+                    $role=new Assignments;
+                    $role->item_name=Yii::$app->request->post('Assignments')['item_name'];
+                    $role->user_id=$id;
+                    $role->save();
+                }
+
+
                 return $this->render('view', [
                     'model' => $model,
                     'role' => $role,
+                    'roles' => $roles,
                     'posts' => $posts,
                     'comments'=>$comments,
                    
@@ -219,4 +230,6 @@ class UserController extends Controller
             return $this->render('change_password',['user'=>$user]);
           }
     }
+
+   
 }

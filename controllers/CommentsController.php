@@ -129,7 +129,6 @@ class CommentsController extends Controller
             } else {
                 return $this->render('update', [
                     'model' => $model,
-                    'thisid'=>$model->auth_id,
                 ]);
             }
         }
