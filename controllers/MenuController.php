@@ -24,21 +24,8 @@ class MenuController extends Controller
     {
         if(Yii::$app->user->can('menu-access'))
         {
-            $dataProvider = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>1]),
-            ]);
-            $dataProvider2 = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>2]),
-            ]);
-            $dataProvider3 = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>3]),
-            ]);
-
-            return $this->render('index', [
-                'dataProvider' => $dataProvider,
-                'dataProvider2' => $dataProvider2,
-                'dataProvider3' => $dataProvider3,
-            ]);
+           
+            return $this->render('index');
         }
         else{
             throw new ForbiddenHttpException;

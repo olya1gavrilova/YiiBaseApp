@@ -205,7 +205,7 @@ class PostController extends Controller
                 $model->author_id = $user->id;
                 if ($model->load(Yii::$app->request->post()))
                 {
-                    $model->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
+                    //$model->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->id, 'category' => $category ]);
                 } 

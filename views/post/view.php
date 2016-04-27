@@ -35,5 +35,5 @@ $this->params['breadcrumbs'][] = $this->title;
             <br />
             <hr />
         <?php endforeach?>
-            <?=Html::a('Добавить комментарий',['../comments/create','id'=>$model->id] ,['class'=>'btn btn-info']);?>
+            <?=Html::a('Добавить комментарий',['../comments/create/'.$model->id] ,['class'=>'btn btn-info']);?>
 </div>

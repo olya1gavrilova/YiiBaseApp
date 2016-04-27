@@ -70,7 +70,7 @@ class Post extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'author_id']);
     }
 
-    /**
+        /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategory()
@@ -90,4 +90,7 @@ class Post extends \yii\db\ActiveRecord
 
       return Post::find()->where(['<', 'publish_date', date('Y-m-d H:i:s')])->where(['>', 'end_publish', date('Y-m-d H:i:s')])->andWhere(['publish_status'=>'publish']);
     }
+
+
+     
 }

@@ -6,6 +6,8 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 use app\models\MenuType;
+use app\models\Menu;
+use yii\data\ActiveDataProvider;
 
 
 $this->title = 'Меню';
@@ -18,52 +20,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Create Menu', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
-    <h3>Главное меню</h3>
+    <?php foreach(MenuType::find()->all() as $menu):?>
+    <h3><?=$menu->menu_type?></h3>
+    
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => new ActiveDataProvider([ 'query' => Menu::find()->where(['type'=>$menu->id]) ]),
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             //'menu_id',
             'menu_item',
-            'menu_url:url',
+            'menu_url',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+            'template' => '{update} {delete}'],
         ],
     ]); ?>
     <br /><br />
+    <?php endforeach?>
 
-    <?php if(MenuType::find()->where(['id'=>2])->one()):?>
-        <h3>Меню Боковое</h3>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider2,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            //'menu_id',
-            'menu_item',
-            'menu_url:url',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php endif?>
-    <br /><br />
-
-    <?php if(MenuType::find()->where(['id'=>3])->one()):?>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider3,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            //'menu_id',
-            'menu_item',
-            'menu_url:url',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php endif?>
+    
 
 </div>

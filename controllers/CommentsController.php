@@ -99,6 +99,7 @@ class CommentsController extends Controller
                 $model->auth_nick=Yii::$app->user->identity->username;
             }
             $model->save();
+            Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
             return $this->redirect(['../post/view', 'id' => $id, 'ok'=>'ok']);
         } else {
             return $this->render('create', [
