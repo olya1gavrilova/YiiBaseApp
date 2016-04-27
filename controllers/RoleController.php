@@ -63,10 +63,9 @@ class RoleController extends Controller
             //получаем массив значений из формы
              $post=Yii::$app->request->post('roles');
            if($post){
-            Assignments::deleteAll();
             //перезаписываем данные в таблицу
                 foreach($post as $key=>$value){
-                   
+                    Assignments::deleteAll(['user_id'=>$key]);
                     $assignment=new Assignments;
                     $assignment->user_id=$key;
                     $assignment->item_name=$value;
@@ -76,7 +75,7 @@ class RoleController extends Controller
                     
                 }
            $_POST['roles']="";
-            return $this->redirect('index');
+            return $this->redirect('roles');
            }
             //
             return $this->render('index', [
