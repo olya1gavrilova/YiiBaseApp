@@ -45,12 +45,12 @@ class PostController extends Controller
     {
         $pagination=new Pagination([
                     'defaultPageSize'=>10,
-                    'totalCount'=>Post::arePublished(3)->count(),
+                    'totalCount'=>Post::isPublished()->count(),
                 ]);
 
       
         
-        $posts=Post::arePublished(3)
+        $posts=Post::isPublished()
                     ->offset($pagination->offset)
                     ->limit($pagination->limit)
                     ->orderBy('publish_date DESC')
@@ -205,7 +205,7 @@ class PostController extends Controller
                 $model->author_id = $user->id;
                 if ($model->load(Yii::$app->request->post()))
                 {
-                    $model->anons=strip_tags(StringHelper::truncateWords($model->content, 50));
+                    $model->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->id, 'category' => $category ]);
                 } 

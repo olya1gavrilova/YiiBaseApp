@@ -13,14 +13,12 @@ $this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['post/list'
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
-    <?=$date?>
 
    <h1><?=$model->title?></h1>
         Автор: <?=Html::a($author,['index', 'id'=> $model->author_id])?>
+         <br />
+        Дата публикации: <?=$model->publish_date?>
         <br />
-        <?php if($ok):?>
-            <div class="alert alert-success" role="alert">Ваш комментарий получен и будет опубликован после подтверждения модератором</div>
-        <?php endif?>
 
 
         <br />
