@@ -62,7 +62,7 @@ class UserController extends Controller
                 $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
                 $roles=Role::find()->where(['type'=>1])->all();
                 
-                if(Yii::$app->request->post()){
+                if(Yii::$app->request->post() && $id!=1){
                     Assignments::deleteAll(['user_id'=>$id]);
                     $role=new Assignments;
                     $role->item_name=Yii::$app->request->post('Assignments')['item_name'];

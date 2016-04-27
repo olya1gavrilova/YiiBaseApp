@@ -65,6 +65,7 @@ class RoleController extends Controller
            if($post){
             //перезаписываем данные в таблицу
                 foreach($post as $key=>$value){
+                    if($key!=1){
                     Assignments::deleteAll(['user_id'=>$key]);
                     $assignment=new Assignments;
                     $assignment->user_id=$key;
@@ -72,10 +73,10 @@ class RoleController extends Controller
                     $assignment->insert();
 
                     Yii::$app->session->setFlash('success', 'данные успешно изменены');
-                    
+                    }
                 }
            $_POST['roles']="";
-            return $this->redirect('roles');
+            return $this->redirect('index');
            }
             //
             return $this->render('index', [
