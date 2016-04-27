@@ -29,12 +29,12 @@ class Page extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'text', 'meta_description'], 'required'],
+            [['title', 'text', 'meta_description'], 'required', 'on'=>'create'],
             [['text'], 'string'],
             [['title'], 'string', 'max' => 48],
             [['url'], 'string', 'max' => 120],
             [['meta_description'], 'string', 'max' => 255],
-            [['url'], 'validateUrl']
+           
         ];
     }
 
@@ -71,7 +71,7 @@ class Page extends \yii\db\ActiveRecord
     {
         $find=Page::find()->where(['url'=>$this->url])->one();
         if($find){
-          return $this->url=$this->url.'-'.(Page::find()->max('id')+1);           
+          return $this->url=$this->url.'_'.(Page::find()->max('id')+1);           
         }
     }
 }

@@ -44,11 +44,12 @@ class PostController extends Controller
     {
         $pagination=new Pagination([
                     'defaultPageSize'=>10,
-                    'totalCount'=>Post::find() ->where(['publish_status'=>'publish'])->count(),
+                    'totalCount'=>Post::arePublished(3)->count(),
                 ]);
 
-         $posts = Post::find()
-                    ->where( ['publish_status'=>'publish'])
+      
+        
+        $posts=Post::arePublished(3)
                     ->offset($pagination->offset)
                     ->limit($pagination->limit)
                     ->orderBy('publish_date DESC')
@@ -59,6 +60,7 @@ class PostController extends Controller
                     'pagination'=>$pagination,
                     'user' =>$user,
                     'author'=>$author,
+                    'time' => $time,
                 ]);
 
     }

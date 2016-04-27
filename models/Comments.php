@@ -71,5 +71,12 @@ class Comments extends \yii\db\ActiveRecord
      public function isAuthor($id){
            return $id===Yii::$app->user->id ? true: false;
     }
+    public function arePublished($limit){
 
+    $start_publish=time()-($limit*60*60*24);
+
+     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
+
+      return Post::find()->where(['>', 'date', $time])->andWhere(['status'=>'publish']);
+    }
 }

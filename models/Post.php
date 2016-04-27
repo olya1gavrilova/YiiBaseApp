@@ -83,9 +83,13 @@ class Post extends \yii\db\ActiveRecord
     }
 
     //время публикации в сутках
-     public function isPublished($limit){
-        if( (time()-Yii::$app->formatter->asTimestamp($this->publish_date)) < ($limit*60*60*24)){
-            return true;
-        }
+    
+    public function arePublished($limit){
+
+    $start_publish=time()-($limit*60*60*24);
+
+     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
+
+      return Post::find()->where(['>', 'publish_date', $time])->andWhere(['publish_status'=>'publish']);
     }
 }

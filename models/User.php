@@ -21,6 +21,8 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
     public $newPassword;
     public $newPasswordConfirm;
 
+
+
     /**
      * @inheritdoc
      */

@@ -73,10 +73,13 @@ class PageController extends Controller
             $model = new Page();
 
             if ($model->load(Yii::$app->request->post()) ) {
-               $model->url = $model->translit($model->title);
+               
+                $model->url = $model->translit($model->title);
+                $model->url =$model->validateUrl();
 
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->url]);
+                
             } else {
                 return $this->render('create', [
                     'model' => $model,
@@ -102,7 +105,7 @@ class PageController extends Controller
            $model=Page::find()->where(['url'=>$id])->one();
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['view', 'id' => $model->url]);
             } else {
                 return $this->render('update', [
                     'model' => $model,
