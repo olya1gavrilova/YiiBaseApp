@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php if (Yii::$app->user->can('role-list')):?>
             <tr>
                 <td>Управление ролями</td>
-                <td><?=Html::a('Перейти', '/role/index', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', '/roles', ['class' => 'btn btn-info'])?></td>
             </tr>
           <?php endif?>  
           <?php if (Yii::$app->user->can('delete-post') || Yii::$app->user->can('update-post')):?>  
