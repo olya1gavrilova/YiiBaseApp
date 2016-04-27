@@ -5,6 +5,8 @@ use yii\widgets\ActiveForm;
 
 use yii\helpers\ArrayHelper;
 use app\models\Category;
+use vova07\imperavi\Widget;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Post */
@@ -17,9 +19,16 @@ use app\models\Category;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true])->label('Заголовок') ?>
 
-    <?//= $form->field($model, 'anons')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'content')->textarea(['rows' => 6])->label('Текст') ?>
+    <?php echo $form->field($model, 'content')->widget(Widget::className(), [
+    'settings' => [
+        'lang' => 'ru',
+        'minHeight' => 200,
+        'plugins' => [
+            'clips',
+            'fullscreen'
+        ]
+    ]
+    ])->label('Текст поста'); ?>
 
     <?= $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->all(), 'id', 'title'))->label('Категория') ?>
    

@@ -58,6 +58,8 @@ $config = [
              '<controller:\w+>/<id:\d+>' => '<controller>/view',
              '<controller:\w+>s' => '<controller>/index',                
                  '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+               '<page:\w+>/<action:\w+>/<id:\w+>' => '<page>/<action>',   
+
             ],
         ],
         

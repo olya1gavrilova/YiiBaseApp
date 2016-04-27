@@ -68,5 +68,27 @@ class Comments extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Post::className(), ['id' => 'post_id']);
     }
+     public function isAuthor($id){
+           return $id==Yii::$app->user->id ? true: false;
+    }
 
+    public function arePublished($limit){
+
+    $start_publish=time()-($limit*60*60*24);
+
+     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
+
+      return Post::find()->where(['>', 'date', $time])->andWhere(['status'=>'publish']);
+    }
+
+     public function isPublished($limit, $id){
+
+    $start_publish=time()-($limit*60*60*24);
+
+     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
+
+      if (Comments::findOne(['id'=>$id])->date > $time){
+        return true;
+      }
+   }
 }

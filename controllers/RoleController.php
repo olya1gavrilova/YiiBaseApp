@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Roles;
+use app\models\Role;
 use app\models\User;
 use app\models\Assignments;
 use app\models\RoleChild;
@@ -14,14 +14,15 @@ use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 
 use yii\data\Pagination;
+use yii\web\Session;
 
 /**
  * RolesController implements the CRUD actions for Roles model.
  */
-class RolesController extends Controller
+class RoleController extends Controller
 {
     
-    public function behaviors()
+    /*public function behaviors()
     { 
         return [
             'verbs' => [
@@ -33,7 +34,7 @@ class RolesController extends Controller
         ];
     
    
-    }
+    }*/
 
     /**
      * Lists all Roles models.
@@ -49,7 +50,7 @@ class RolesController extends Controller
                 ]);
 
             //ищем все роли
-            $roles=Roles::find()->where(['type'=> '1'])->all();
+            $roles=Role::find()->where(['type'=> '1'])->all();
             //выводим юзеров
             $users=User::find()
             ->limit($pagination->limit)
@@ -62,20 +63,20 @@ class RolesController extends Controller
             //получаем массив значений из формы
              $post=Yii::$app->request->post('roles');
            if($post){
-            Assignments::deleteAll();
             //перезаписываем данные в таблицу
                 foreach($post as $key=>$value){
-                   
-                    $assignment=new Assignments;
-                    $assignment->user_id=$key;
-                    $assignment->item_name=$value;
-                    $assignment->insert();
+                    if($key!=1){
+                        Assignments::deleteAll(['user_id'=>$key]);
+                        $assignment=new Assignments;
+                        $assignment->user_id=$key;
+                        $assignment->item_name=$value;
+                        $assignment->insert();
 
-                    Yii::$app->session->setFlash('success', 'данные успешно изменены');
-                    
+                        Yii::$app->session->setFlash('success', 'данные успешно изменены');
+                        }
                 }
            $_POST['roles']="";
-            return $this->redirect('index');
+            return $this->redirect('roles');
            }
             //
             return $this->render('index', [
@@ -107,14 +108,14 @@ class RolesController extends Controller
     }*/
 
     /**
-     * Creates a new Roles model.
+     * Creates a new Role model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate($id)
     {
         if(Yii::$app->user->can('role-create')){
-            $model = new Roles();
+            $model = new Role();
 
             if ($model->load(Yii::$app->request->post())) {
                 if($id==='role'){
@@ -151,10 +152,10 @@ class RolesController extends Controller
                $model = $this->findModel($id);
 
                //находим все простые действия
-               $functions =Roles::find()->where(['type'=>2])->all();
+               $functions =Role::find()->where(['type'=>2])->all();
 
                //находим все роли
-               $roles= Roles::find()->where(['type'=>1])->all();
+               $roles= Role::find()->where(['type'=>1])->all();
 
                //находим все связи между ролями
                $allconn=RoleChild::find()->all();
@@ -212,28 +213,71 @@ class RolesController extends Controller
     }
 
     /**
-     * Deletes an existing Roles model.
+     * Deletes an existing Role model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model= new Role;
+    if($id==='role')
+     { 
+        $roles=Role::find()->where(['type'=>1])->andWhere(['!=', 'name', 'admin'])->andWhere(['!=', 'name', 'user'])->all();
+    }
+    else
+    { 
+        $roles=Role::find()->where(['type'=>2])->all();
+    }
 
-        return $this->redirect(['index']);
+           
+        if ($model->load(Yii::$app->request->post())) {
+             
+             $post=$model->name;
+
+             $numbers=Assignments::findAll(['item_name'=>$post]);
+             
+            Assignments::deleteAll(['item_name'=>$post]);
+            if($numbers){
+                foreach ($numbers as $number) {
+                    $assignment=new Assignments;
+                        $assignment->user_id=$number->user_id;
+                        $assignment->item_name='user';
+                        $assignment->insert();
+                }
+            }
+             $this->findModel($post)->delete();
+
+                         
+             Yii::$app->session->setFlash('success', $post.' успешно удалено');
+
+             return $this->redirect(['role/index']);
+        }
+        else{
+            
+            
+            return $this->render('delete',
+                [
+                    'model'=>$model,
+                    'roles'=>$roles,
+                ]);
+        
+      }
+       /* $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);*/
     }
 
     /**
-     * Finds the Roles model based on its primary key value.
+     * Finds the Role model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Roles the loaded model
+     * @return Role the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Roles::findOne($id)) !== null) {
+        if (($model = Role::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -10,7 +10,7 @@ use yii\widgets\LinkPager;
 /* @var $searchModel app\models\RolesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Roles';
+$this->title = 'Роли';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="roles-index">
@@ -20,20 +20,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Создать роль', ['create', 'id'=>'role'], ['class' => 'btn btn-success']) ?>
+         <?= Html::a('Удалить роль', ['delete', 'id'=>'role'], ['class' => 'btn btn-info']) ?>
     </p>
 
     
     <table class="table table-hover">
-    <?print_r($post)?>
-    <?print_r($k)?>
-    <?print_r($v)?>
+    
         <tr>
         <td><td>
         <?php foreach ($roles as $role):?>
             <td>
 
-                <a href='./update?id=<?=$role->name?>'>
-                    <?=$role->description?>
+                
+                <?=Html::a($role->description,['update','id'=>$role->name]);?>
+                   
                 </a>
             <td>
         <?php endforeach?>

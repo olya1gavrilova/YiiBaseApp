@@ -16,4 +16,5 @@ return array(
     'yii\\' => array($vendorDir . '/yiisoft/yii2'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
+    'vova07\\imperavi\\' => array($vendorDir . '/vova07/imperavi'),
 );

@@ -13,6 +13,8 @@ use yii\web\ForbiddenHttpException;
 use yii\data\Pagination;
 use app\models\Post;
 use yii\helpers\StringHelper;
+use yii\base\Security;
+
 
 /**
  * CommentsController implements the CRUD actions for Comments model.
@@ -54,7 +56,7 @@ class CommentsController extends Controller
      */
     public function actionView($id)
     {
-         if(Yii::$app->user->can('comment-list'))
+        if(!Yii::$app->user->isGuest)
          {
 
                 $dataProvider = new ActiveDataProvider([
@@ -66,6 +68,7 @@ class CommentsController extends Controller
 
                 return $this->render('index', [
                     'dataProvider' => $dataProvider,
+                    'id'=>$id,
                 ]);
          }
         else{
@@ -113,8 +116,12 @@ class CommentsController extends Controller
      */
     public function actionUpdate($id)
     {
-        if(Yii::$app->user->can('comment-update')){
-            $model = $this->findModel($id);
+
+        $model = $this->findModel($id);
+        if(Yii::$app->user->can('comment-update')  || Comments::isAuthor($model->auth_id) && Comments::isPublished(3 , $id)){
+       
+            
+            $thisid=Yii::$app->user->identity->id;
 
             if ($model->load(Yii::$app->request->post()) &&  $model->save() ) {
                
@@ -126,6 +133,7 @@ class CommentsController extends Controller
             }
         }
         else{
+            Yii::$app->session->setFlash('warning','Срок изменения комментария истек');
             throw new ForbiddenHttpException;
             
         }
@@ -145,6 +153,7 @@ class CommentsController extends Controller
             return $this->redirect(['index']);
         }
         else{
+
             throw new ForbiddenHttpException;
             
         }

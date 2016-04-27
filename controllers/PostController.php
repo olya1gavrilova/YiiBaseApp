@@ -15,6 +15,7 @@ use app\models\Comments;
 use app\models\Category;
 use app\models\User;
 use yii\helpers\StringHelper;
+use yii\base\Security;
 
 /**
  * PostController implements the CRUD actions for Post model.
@@ -44,11 +45,12 @@ class PostController extends Controller
     {
         $pagination=new Pagination([
                     'defaultPageSize'=>10,
-                    'totalCount'=>Post::find() ->where(['publish_status'=>'publish'])->count(),
+                    'totalCount'=>Post::arePublished(3)->count(),
                 ]);
 
-         $posts = Post::find()
-                    ->where( ['publish_status'=>'publish'])
+      
+        
+        $posts=Post::arePublished(3)
                     ->offset($pagination->offset)
                     ->limit($pagination->limit)
                     ->orderBy('publish_date DESC')
@@ -59,14 +61,14 @@ class PostController extends Controller
                     'pagination'=>$pagination,
                     'user' =>$user,
                     'author'=>$author,
+                    'time' => $time,
                 ]);
 
     }
 
     ///все посты конкретного автора
     public function actionAll($id)
-    {   
-        $user=new User;
+    {   $user=new User;
         $isauthor=$user->isAuthor($id);
             //делаем пагинацию
                 $pagination=new Pagination([
@@ -101,7 +103,7 @@ class PostController extends Controller
                 $user= Yii::$app->user->identity->username;
                 $author=User::find()->where(['id'=>$id])->one()->username;
 
-
+               
                 return $this->render('all', [
                     'posts' => $posts,
                     'pagination'=>$pagination,
@@ -145,11 +147,10 @@ class PostController extends Controller
     {
         $post= new Post;
         $model=$this->findModel($id);
-
+     
         if(Yii::$app->user->can('post-draft-view') || $post->isAuthor($id) || $model->publish_status==='publish')
         {
            
-             
             $pagination=new Pagination([
                 'defaultPageSize'=>5,
                 'totalCount'=>Comments::find()
@@ -167,7 +168,6 @@ class PostController extends Controller
 
             $author=User::find()->where(['id'=>$model->author_id])->one();
 
-     
 
             return $this->render('view', [
                 'model' => $model,
@@ -175,6 +175,7 @@ class PostController extends Controller
                 'pagination'=>$pagination,
                 'ok'=>Yii::$app->request->get('ok'),
                 'author'=>$author->username,
+                
 
             ]);
          }
@@ -204,7 +205,7 @@ class PostController extends Controller
                 $model->author_id = $user->id;
                 if ($model->load(Yii::$app->request->post()))
                 {
-                    $model->anons=StringHelper::truncateWords($model->content, 50);
+                    $model->anons=strip_tags(StringHelper::truncateWords($model->content, 50));
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->id, 'category' => $category ]);
                 } 
@@ -261,7 +262,7 @@ class PostController extends Controller
         $post=new Post;
 
 
-        if(Yii::$app->user->can('delete-post') || $post->isAuthor($id))
+        if(Yii::$app->user->can('delete-post') || $post->isAuthor($id) )
         {
             $this->findModel($id)->delete();
 
@@ -269,6 +270,7 @@ class PostController extends Controller
         }
         else
         {
+
             throw new ForbiddenHttpException;
             
         }
