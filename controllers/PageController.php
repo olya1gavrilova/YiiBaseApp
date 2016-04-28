@@ -47,14 +47,11 @@ class PageController extends Controller
      */
     public function actionView($id)
     {
-        $model=Page::find()->where(['url'=>$id])->one();
+        $model=$this->findModel($id);
         return $this->render('view', [
             'model' => $model,
-            'canonical'=>'<link rel="canonical" href="'.dirname(__DIR__).'/post/view/'.$model->url.'" />',
         ]);
-        /* return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);*/
+      
      }
 
     /**

@@ -77,6 +77,7 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
             'access_token' => 'Access Token',
         ];
     }
+    
 
      public static function findIdentity($id)
     {

@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\ForbiddenHttpException;
+use app\models\MenuType;
 
 /**
  * MenuController implements the CRUD actions for Menu model.
@@ -125,9 +126,35 @@ class MenuController extends Controller
     {
         if(Yii::$app->user->can('menu-access'))
         {
-            $this->findModel($id)->delete();
+            if($id==='menu'){
+               
+                $model= new MenuType;
+                if(Yii::$app->request->post())
+                {  
+                    $id= Yii::$app->request->post('MenuType')['id'];
+                    if(Menu::findAll(['type'=>$id])){
+                        Yii::$app->session->setFlash('warning','Нельзя удалить меню в котором есть пункты меню');
+                    }
+                    else{
+                            MenuType::findOne(['id'=>$id])->delete();
+                           Yii::$app->session->setFlash('success','Пункт меню успешно удален');
+                    }
+                    return $this->redirect('index');
+                }
+                
+                else{
+                    return $this->render('delete', [
+                    'model' => $model,
+                    'menu_type'=>MenuType::find()->all(),
+                     ]);
+                }
+            }
 
-             return $this->redirect(['index']);
+            else{
+                $this->findModel($id)->delete();
+
+                 return $this->redirect(['index']);
+            }
          }
          else{
             throw new ForbiddenHttpException;

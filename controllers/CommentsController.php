@@ -56,10 +56,7 @@ class CommentsController extends Controller
      */
     public function actionView($id)
     {
-        if(!Yii::$app->user->isGuest)
-         {
-
-                $dataProvider = new ActiveDataProvider([
+             $dataProvider = new ActiveDataProvider([
                     'query' => Comments::find()->where(['auth_id'=>$id])->orderBy('date DESC'),
                     'pagination'=>array(
                         'pageSize'=>10,
@@ -70,11 +67,6 @@ class CommentsController extends Controller
                     'dataProvider' => $dataProvider,
                     'id'=>$id,
                 ]);
-         }
-        else{
-            throw new ForbiddenHttpException;
-            
-        }
     }
 
     /**
@@ -100,7 +92,7 @@ class CommentsController extends Controller
             }
             $model->save();
             Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
-            return $this->redirect(['../post/view', 'id' => $id, 'ok'=>'ok']);
+            return $this->redirect(['../post/view', 'id' => $id]);
         } else {
             return $this->render('create', [
                 'model' => $model,

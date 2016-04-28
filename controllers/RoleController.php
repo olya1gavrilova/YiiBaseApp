@@ -118,14 +118,27 @@ class RoleController extends Controller
             $model = new Role();
 
             if ($model->load(Yii::$app->request->post())) {
-                if($id==='role'){
-                    $model->type='1';
+                 $model->validate();
+                if(!Role::findOne(['name'=>$model->name]))
+                {
+                    if($id==='role'){
+                        $model->type='1';
+                    }
+                    else{
+                        $model->type = '2';
+                    }
+
+                    $model->save();
+                    return $this->redirect(['index']);
                 }
-                else{
-                    $model->type = '2';
+                else {
+                    Yii::$app->session->setFlash('error','Роль/функция с таким названием существует');
+                        return $this->render('create', [
+                        'model' => $model,
+                        'id'=>$id
+                    ]);
                 }
-                $model->save();
-                return $this->redirect(['index']);
+                
             } else {
                 return $this->render('create', [
                     'model' => $model,

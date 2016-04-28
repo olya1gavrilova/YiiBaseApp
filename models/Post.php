@@ -92,5 +92,11 @@ class Post extends \yii\db\ActiveRecord
     }
 
 
-     
+     public function hasAnons(){
+
+        if($this->anons==''){
+            return $this->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
+        }
+      
+    }
 }

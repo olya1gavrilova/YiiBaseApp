@@ -54,14 +54,18 @@ class UserController extends Controller
     {
         $user= new User;
 
-        if(Yii::$app->user->can('all-users') || $user->isAuthor($id))
-            {
                 $model = $this->findModel($id);
-                $role=Assignments::findOne(['user_id'=>$id]);
                 $posts=Post::find()->where(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
                 $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
-                $roles=Role::find()->where(['type'=>1])->all();
+               
                 
+
+          if(Yii::$app->user->can('role-update'))
+           {   
+              
+                $role=Assignments::findOne(['user_id'=>$id]);
+                 $roles=Role::find()->where(['type'=>1])->all();
+
                 if(Yii::$app->request->post() && $id!=1){
                     Assignments::deleteAll(['user_id'=>$id]);
                     $role=new Assignments;
@@ -69,22 +73,21 @@ class UserController extends Controller
                     $role->user_id=$id;
                     $role->save();
                 }
+            }
 
-
+   
                 return $this->render('view', [
                     'model' => $model,
                     'role' => $role,
                     'roles' => $roles,
                     'posts' => $posts,
                     'comments'=>$comments,
+                    'id'=>$id
                    
                 ]);
-            }
-
-            else{
-               throw new ForbiddenHttpException;
-            }
     }
+
+           
 
      
     /**

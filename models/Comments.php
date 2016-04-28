@@ -20,6 +20,8 @@ use Yii;
  */
 class Comments extends \yii\db\ActiveRecord
 {
+
+  
     /**
      * @inheritdoc
      */
@@ -45,6 +47,7 @@ class Comments extends \yii\db\ActiveRecord
             [['short_text'], 'string', 'max' => 255]
         ];
     }
+
 
     /**
      * @inheritdoc

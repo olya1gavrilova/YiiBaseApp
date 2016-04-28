@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <td>
-             <?=Html::a('Создать пост','create', ['class' => 'btn btn-info btn-дп'])?>                    
+             <?=Html::a('Создать пост','../create', ['class' => 'btn btn-info btn-дп'])?>                    
     </td>
     <br /> <br />
 
@@ -43,10 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>Дата</td>
                 <td>Название</td>
                 <td>Анонс</td>
+                <td>Автор</td
                 <?php 
                         if(Yii::$app->user->can('update-post') || $isauthor):
                 ?>
-                <td>Автор</td>
+                >
                 <td>Cтатус</td>
                 <td></td>
                 <?php endif ?>

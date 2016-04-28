@@ -18,7 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Menu', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать пункт меню', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить меню', ['create','id'=>'menu'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Удалить меню', ['delete','id'=>'menu'], ['class' => 'btn btn-warning']) ?>
     </p>
     <?php foreach(MenuType::find()->all() as $menu):?>
     <h3><?=$menu->menu_type?></h3>
