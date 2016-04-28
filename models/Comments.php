@@ -21,6 +21,17 @@ use Yii;
 class Comments extends \yii\db\ActiveRecord
 {
 
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_CREATE => ['auth_nick', 'title', 'text', 'auth_email'],
+            self::SCENARIO_UPDATE => [ 'title', 'text']
+        ];
+    }
+
   
     /**
      * @inheritdoc
@@ -36,8 +47,8 @@ class Comments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['auth_nick', 'title', 'text', 'auth_email'], 'required', 'on' => 'create'],
-            [['title', 'text'], 'required', 'on' => 'update'],
+            [['auth_nick', 'title', 'text', 'auth_email'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['title', 'text'], 'required', 'on' => self::SCENARIO_UPDATE],
             [['auth_id', 'post_id'], 'integer'],
             [['text', 'status'], 'string'],
             [['date'], 'safe'],

@@ -51,7 +51,6 @@ class PageController extends Controller
         return $this->render('view', [
             'model' => $model,
         ]);
-      
      }
 
     /**
@@ -63,11 +62,11 @@ class PageController extends Controller
     {
         if(Yii::$app->user->can('page-control'))
         {
+
+            $model = new Page(['scenario' => Page::SCENARIO_CREATE]);
             $dataProvider = new ActiveDataProvider([
                 'query' => Page::find(),
             ]);
-
-            $model = new Page();
 
             if ($model->load(Yii::$app->request->post()) ) {
                
@@ -99,7 +98,8 @@ class PageController extends Controller
     {   
         if(Yii::$app->user->can('page-control'))
         {
-           $model=Page::find()->where(['url'=>$id])->one();
+           $model=$this->findModel($id);
+           $model->scenario=Page::SCENARIO_UPDATE;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->url]);
@@ -125,7 +125,7 @@ class PageController extends Controller
     {
         if(Yii::$app->user->can('page-control'))
         {
-            $model=Page::find()->where(['url'=>$id])->one();
+            $model=$this->findModel($id);
             $model->delete();
 
             return $this->redirect(['index']);
@@ -145,7 +145,7 @@ class PageController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Page::findOne($id)) !== null) {
+        if (($model = Page::findOne(['url'=>$id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -15,6 +15,9 @@ use Yii;
  */
 class Page extends \yii\db\ActiveRecord
 {
+
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
     /**
      * @inheritdoc
      */
@@ -29,7 +32,8 @@ class Page extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'text', 'meta_description'], 'required', 'on'=>'create'],
+            [['title', 'text', 'meta_description'], 'required', 'on'=>self::SCENARIO_CREATE],
+            [['title', 'text'], 'required', 'on'=>self::SCENARIO_UPDATE],
             [['text'], 'string'],
             [['title'], 'string', 'max' => 48],
             [['url'], 'string', 'max' => 120],

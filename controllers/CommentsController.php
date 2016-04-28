@@ -76,7 +76,7 @@ class CommentsController extends Controller
      */
     public function actionCreate($id)
     {
-        $model = new Comments();
+        $model = new Comments(['scenario' => Comments::SCENARIO_CREATE]);
         $post= Post::find()->where(['id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -111,6 +111,8 @@ class CommentsController extends Controller
     {
 
         $model = $this->findModel($id);
+        $model->scenario = Comments::SCENARIO_UPDATE;
+
         if(Yii::$app->user->can('comment-update')  || Comments::isAuthor($model->auth_id) && Comments::isPublished(3 , $id)){
        
             
