@@ -88,7 +88,7 @@ class Post extends \yii\db\ActiveRecord
     public function isPublished(){
 
 
-      return Post::find()->where(['<', 'publish_date', date('Y-m-d H:i:s')])->where(['>', 'end_publish', date('Y-m-d H:i:s')])->andWhere(['publish_status'=>'publish']);
+      return Post::find()->where(['<', 'publish_date', date('Y-m-d H:i:s')])->andWhere(['>', 'end_publish', date('Y-m-d H:i:s')])->andWhere(['publish_status'=>'publish']);
     }
 
 

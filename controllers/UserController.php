@@ -55,8 +55,18 @@ class UserController extends Controller
         $user= new User;
 
                 $model = $this->findModel($id);
+         if(Yii::$app->user->can('update-post') ||Post::isAuthor($id) && !Yii::$app->user->isGuest){
                 $posts=Post::find()->where(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
+            }
+          else{
+                $posts=Post::isPublished()->andWhere(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
+            }
+        if(Yii::$app->user->can('comment-update') ||Comments::isAuthor($id) && !Yii::$app->user->isGuest)
                 $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
+            else{
+                $comments=Comments::find()->where(['auth_id'=>$id, 'status'=>'publish'])->OrderBy('date DESC')->limit(3)->all();
+            }
+            
                
                 
 
