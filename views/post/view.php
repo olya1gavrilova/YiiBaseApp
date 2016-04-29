@@ -9,7 +9,7 @@ use yii\widgets\LinkPager;
 /* @var $model app\models\User */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['post/list']];
+$this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['post/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
@@ -30,7 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= LinkPager::widget(['pagination' => $pagination]) ?>
         <?php foreach($comments as $comment):?>
             <br />
-            Коммент от <b><?=$comment->auth_nick?></b> в <?=$comment->date?>:<br />
+            Коммент от <b>
+            <?php if($comment->auth_id!='0'):?>
+                <a href="/user/view/<?=$comment->auth_id?>"><?=$comment->auth_nick?></a> 
+            <?php else:?>
+                <?=$comment->auth_nick?>
+            <?php endif?>
+            </b>
+            в <?=$comment->date?>:<br />
             <b><?=$comment->title?></b><br />
             <?=$comment->text?>
             <br />
