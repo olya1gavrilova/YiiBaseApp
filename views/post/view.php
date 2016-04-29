@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-view">
 
    <h1><?=$model->title?></h1>
-        Автор: <?=Html::a($author,['../user/view', 'id'=> $model->author_id])?>
+        Автор: <?=Html::a($author,['../user/view/'. $model->author_id])?>
          <br />
         Дата публикации: <?=$model->publish_date?>
         <br />
