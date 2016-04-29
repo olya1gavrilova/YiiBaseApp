@@ -14,24 +14,23 @@ use yii\captcha\Captcha;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true])->label('Заголовок комментария') ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'text')->textarea(['rows' => 6])->label('Текст комментария') ?>
 
     <?php if(Yii::$app->user->can('comment-update')):?>
 
-    <?= $form->field($model, 'status')->dropDownList([ 'draft' => 'Draft', 'publish' => 'Publish', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'status')->dropDownList([ 'draft' => 'Не опубликован', 'publish' => 'Опубликован'])->label('Публикация') ?>
 
      <?php endif?>
 
      <?php if(Yii::$app->user->isGuest): ?>
-            <?= $form->field($model, 'auth_nick')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'auth_nick')->textInput(['maxlength' => true])->label('Никнейм') ?>
 
-            <?= $form->field($model, 'auth_email')->textInput(['maxlength' => true]) ?>
-
-           
+            <?= $form->field($model, 'auth_email')->textInput(['maxlength' => true])->label('Емэйл') ?>
+             <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                        'captchaAction' => ['/site/captcha']
+                    ]) ?>           
     
     <?php endif?>
 

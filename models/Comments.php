@@ -20,6 +20,24 @@ use Yii;
  */
 class Comments extends \yii\db\ActiveRecord
 {
+    const SCENARIO_CREATE_GUEST = 'create';
+    const SCENARIO_CREATE = 'create_comm';
+    const SCENARIO_UPDATE = 'update';
+    
+
+    public $captcha;
+
+    public function scenarios()
+    {
+        return [
+
+            self::SCENARIO_CREATE_GUEST=>['auth_nick', 'title', 'text', 'auth_email','captcha'],
+            self::SCENARIO_CREATE => [ 'title', 'text','status'],
+            self::SCENARIO_UPDATE => [ 'title', 'text','status'],
+        ];
+    }
+
+  
     /**
      * @inheritdoc
      */
@@ -34,17 +52,19 @@ class Comments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['auth_nick', 'title', 'text', 'auth_email'], 'required', 'on' => 'create'],
-            [['title', 'text'], 'required', 'on' => 'update'],
+            [['auth_nick', 'title', 'text', 'auth_email','captcha'], 'required','on' => self::SCENARIO_CREATE_GUEST],
+            [['title', 'text'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['title', 'text'], 'required', 'on' => self::SCENARIO_UPDATE],
             [['auth_id', 'post_id'], 'integer'],
-            [['text', 'status'], 'string'],
+            [['text','status'], 'string'],
             [['date'], 'safe'],
             ['auth_email', 'email'],
+            ['captcha', 'captcha'],
             [['auth_nick'], 'string', 'max' => 20],
             [['auth_email', 'title'], 'string', 'max' => 30],
-            [['short_text'], 'string', 'max' => 255]
         ];
     }
+
 
     /**
      * @inheritdoc
@@ -59,7 +79,6 @@ class Comments extends \yii\db\ActiveRecord
             'auth_email' => 'Auth Email',
             'title' => 'Title',
             'text' => 'Text',
-            'short_text' => 'Short Text',
             'status' => 'Status',
             'date' => 'Date',
         ];
@@ -70,15 +89,6 @@ class Comments extends \yii\db\ActiveRecord
     }
      public function isAuthor($id){
            return $id==Yii::$app->user->id ? true: false;
-    }
-
-    public function arePublished($limit){
-
-    $start_publish=time()-($limit*60*60*24);
-
-     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
-
-      return Post::find()->where(['>', 'date', $time])->andWhere(['status'=>'publish']);
     }
 
      public function isPublished($limit, $id){

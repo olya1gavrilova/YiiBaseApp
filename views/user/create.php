@@ -6,6 +6,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+ use yii\captcha\Captcha;
 
 
 $this->title = 'Регистрация';
@@ -18,16 +19,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php $form = ActiveForm::begin(); ?>
 
-        <?= $form->field($model, 'first_name')->textInput(['autofocus' => true])->label('Ваше имя') ?>
+        <?= $form->field($model, 'first_name')->textInput(['autofocus' => true])->label('Ваше имя*') ?>
 
         <?= $form->field($model, 'last_name')->textInput(['autofocus' => true])->label('Ваша фамилия') ?>
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true])->label('Введите логин') ?>
+        <?= $form->field($model, 'username')->textInput(['autofocus' => true])->label('Введите логин*') ?>
+         <?= $form->field($model, 'email')->textInput()->label('Введите ваш адрес электронной почты*') ?>
 
-        <?= $form->field($model, 'password')->passwordInput()->label('Введите пароль') ?>
+        <?= $form->field($model, 'password')->passwordInput()->label('Введите пароль*') ?>
 
         <?/*= $form->field($model, 'rememberMe')->checkbox([
             'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
         ]) */?>
+        <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                        'captchaAction' => ['/site/captcha']
+                    ]) ?>
 
         <div class="form-group">
             <div class="col-lg-11">

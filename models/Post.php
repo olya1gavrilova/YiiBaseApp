@@ -35,10 +35,10 @@ class Post extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title','content'], 'required'],
+            [['title','content','end_publish','publish_date'], 'required'],
             [['anons', 'content', 'publish_status'], 'string'],
             [['category_id', 'author_id'], 'integer'],
-            [['publish_date'], 'safe'],
+            [['publish_date','end_publish'], 'safe'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -58,6 +58,7 @@ class Post extends \yii\db\ActiveRecord
             'author_id' => 'Author ID',
             'publish_status' => 'Publish Status',
             'publish_date' => 'Publish Date',
+            'end_publish' => 'End Publish'
         ];
     }
 
@@ -69,7 +70,7 @@ class Post extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'author_id']);
     }
 
-    /**
+        /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategory()
@@ -84,12 +85,18 @@ class Post extends \yii\db\ActiveRecord
 
     //время публикации в сутках
     
-    public function arePublished($limit){
+    public function isPublished(){
 
-    $start_publish=time()-($limit*60*60*24);
 
-     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
+      return Post::find()->where(['<', 'publish_date', date('Y-m-d H:i:s')])->where(['>', 'end_publish', date('Y-m-d H:i:s')])->andWhere(['publish_status'=>'publish']);
+    }
 
-      return Post::find()->where(['>', 'publish_date', $time])->andWhere(['publish_status'=>'publish']);
+
+     public function hasAnons(){
+
+        if($this->anons==''){
+            return $this->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
+        }
+      
     }
 }

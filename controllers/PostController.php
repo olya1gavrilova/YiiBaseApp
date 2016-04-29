@@ -10,6 +10,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 
+use yii\data\ActiveDataProvider;
+
 use yii\data\Pagination;
 use app\models\Comments;
 use app\models\Category;
@@ -22,7 +24,7 @@ use yii\base\Security;
  */
 class PostController extends Controller
 {
-    public function behaviors()
+   /* public function behaviors()
     {
         return [
             'verbs' => [
@@ -32,111 +34,69 @@ class PostController extends Controller
                 ],
             ],
         ];
-    }
+    }*/
 
     /**
      * Lists all Post models.
      * @return mixed
      */
 
-    //вывод всех опубликованных постов 
-    //ДЛЯ ЛИСТА ИСПОЛЬЗУЕТСЯ ШАБЛОН ИНДЕКС!!!!
-    public function actionList()
-    {
-        $pagination=new Pagination([
-                    'defaultPageSize'=>10,
-                    'totalCount'=>Post::arePublished(3)->count(),
-                ]);
-
-      
-        
-        $posts=Post::arePublished(3)
-                    ->offset($pagination->offset)
-                    ->limit($pagination->limit)
-                    ->orderBy('publish_date DESC')
-                    ->all();
-
-         return $this->render('all', [
-                    'posts' => $posts,
-                    'pagination'=>$pagination,
-                    'user' =>$user,
-                    'author'=>$author,
-                    'time' => $time,
-                ]);
-
-    }
-
-    ///все посты конкретного автора
-    public function actionAll($id)
-    {   $user=new User;
-        $isauthor=$user->isAuthor($id);
-            //делаем пагинацию
-                $pagination=new Pagination([
-                    'defaultPageSize'=>15,
-                    'totalCount'=>Post::find() ->where(['author_id'=>$id]) ->count(),
-                ]);
-
-
-                //находим все посты пользователя
-                //если это автор или c правом редактировать чужие посты, он может видеть и опубликованные, и неопубликованные
-                if(Yii::$app->user->can('update-post')|| $user->isAuthor($id))
-                {
-                    $posts = Post::find()
-                    ->where(['author_id'=>$id])
-                    ->offset($pagination->offset)
-                    ->limit($pagination->limit)
-                    ->orderBy('publish_date DESC')
-                    ->all();
-                }
-                //если это кто-то сторонний, он может видеть только опубликованные
-                else
-                {
-                     $posts = Post::find()
-                    ->where(['author_id'=>$id, 'publish_status'=>'publish'])
-                    ->offset($pagination->offset)
-                    ->limit($pagination->limit)
-                    ->orderBy('publish_date DESC')
-                    ->all();
-                }
-                
-
-                $user= Yii::$app->user->identity->username;
-                $author=User::find()->where(['id'=>$id])->one()->username;
-
-               
-                return $this->render('all', [
-                    'posts' => $posts,
-                    'pagination'=>$pagination,
-                    'user' =>$user,
-                    'author'=>$author,
-                    'isauthor' =>$isauthor,
-                ]);
-        
-       
-        
-
-    }
+    
 
     //вывод всех постов  - для администратора
      public function actionIndex()
-    {
-        if(Yii::$app->user->can('update-post') || Yii::$app->user->can('delete-post'))
-        {
+    {   
+        
 
-            $searchModel = new PostSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-             $dataProvider->pagination->pageSize=8;
+            if(Yii::$app->user->can('confirm-post') ||Post::isAuthor($id) && !Yii::$app->user->isGuest)
+            {
+                if(Yii::$app->request->get('id')){
+                    $dataProvider=new ActiveDataProvider([
+                        'query' => Post::find()->where(['author_id'=>Yii::$app->request->get('id')]),
+                        'pagination' => [
+                            'pageSize' => 10,
+                        ],
+                    ]);
+                }
+                else{
+                        $dataProvider=new ActiveDataProvider([
+                        'query' => Post::find(),
+                        'pagination' => [
+                            'pageSize' => 10,
+                        ],
+                        ]);
+                 }
+              }
+            else{
+                if(Yii::$app->request->get('id')){
+                    $dataProvider=new ActiveDataProvider([
+                        'query' => Post::isPublished()->andWhere(['author_id'=>Yii::$app->request->get('id')]),
+                        'pagination' => [
+                            'pageSize' => 10,
+                        ],
+                    ]);
+                }
+                else{
+                    $dataProvider=new ActiveDataProvider([
+                    'query' => Post::isPublished(),
+                    'pagination' => [
+                        'pageSize' => 10,
+                    ],
+                ]);
+               }
+            }
+        
+            $user=User::findOne([ 'id'=> Yii::$app->request->get('id') ])->username;
+            
 
             return $this->render('index', [
-                'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider, 
                 'category'=>Category::find()->all(),
+                'user'=>$user,
+                'id'=>Yii::$app->request->get('id'),
                             
             ]);
-        }
-        else{
-          throw new ForbiddenHttpException;
-        }
+       
     }
 
 
@@ -181,7 +141,7 @@ class PostController extends Controller
          }
          else
             {
-                 throw new ForbiddenHttpException;
+                 throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             }
 
     }
@@ -205,7 +165,7 @@ class PostController extends Controller
                 $model->author_id = $user->id;
                 if ($model->load(Yii::$app->request->post()))
                 {
-                    $model->anons=strip_tags(StringHelper::truncateWords($model->content, 50));
+                    //$model->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->id, 'category' => $category ]);
                 } 
@@ -216,7 +176,7 @@ class PostController extends Controller
                 }
         }
          else{
-          throw new ForbiddenHttpException;
+          throw new ForbiddenHttpException('Недостаточно прав для создания поста');
         }
     }
 
@@ -245,7 +205,7 @@ class PostController extends Controller
         }
         else
         {
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для обновления поста');
             
         }
     }
@@ -271,7 +231,7 @@ class PostController extends Controller
         else
         {
 
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для удаления поста');
             
         }
     }
@@ -289,7 +249,7 @@ class PostController extends Controller
         if (($model = Post::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует');
         }
     }
 }

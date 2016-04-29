@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\ForbiddenHttpException;
+use app\models\MenuType;
 
 /**
  * MenuController implements the CRUD actions for Menu model.
@@ -24,24 +25,11 @@ class MenuController extends Controller
     {
         if(Yii::$app->user->can('menu-access'))
         {
-            $dataProvider = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>1]),
-            ]);
-            $dataProvider2 = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>2]),
-            ]);
-            $dataProvider3 = new ActiveDataProvider([
-            'query' => Menu::find()->where(['type'=>3]),
-            ]);
-
-            return $this->render('index', [
-                'dataProvider' => $dataProvider,
-                'dataProvider2' => $dataProvider2,
-                'dataProvider3' => $dataProvider3,
-            ]);
+           
+            return $this->render('index');
         }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
         
@@ -68,26 +56,29 @@ class MenuController extends Controller
     {
         if(Yii::$app->user->can('menu-access'))
         {
-            $model = new Menu();
+            if (Yii::$app->request->get('id')) { $model = new MenuType(); }
+            else {$model = new Menu(); }
+            
 
-            if ($model->load(Yii::$app->request->post())) {
+                if ($model->load(Yii::$app->request->post())) {
 
-                //проверяем первый символ урла
-                $first_symbol=mb_substr($model->menu_url,0,1);
-                if($first_symbol!=='/'){
-                      $model->menu_url ='/'.$model->menu_url;
+                    //проверяем первый символ урла
+                    //$first_symbol=mb_substr($model->menu_url,0,1);
+                    if(isset($model->menu_url) && mb_substr($model->menu_url,0,1)!=='/'){
+                          $model->menu_url ='/'.$model->menu_url;
+                    }
+                    
+                    $model->save();
+                    return $this->redirect('index');
+                } else {
+                    return $this->render('create', [
+                        'model' => $model,
+                    ]);
                 }
 
-                $model->save();
-                return $this->redirect('index');
-            } else {
-                return $this->render('create', [
-                    'model' => $model,
-                ]);
-            }
         }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -123,7 +114,7 @@ class MenuController extends Controller
                 }
         }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -138,12 +129,38 @@ class MenuController extends Controller
     {
         if(Yii::$app->user->can('menu-access'))
         {
-            $this->findModel($id)->delete();
+            if($id==='menu'){
+               
+                $model= new MenuType;
+                if(Yii::$app->request->post())
+                {  
+                    $id= Yii::$app->request->post('MenuType')['id'];
+                    if(Menu::findAll(['type'=>$id])){
+                        Yii::$app->session->setFlash('warning','Нельзя удалить меню в котором есть пункты меню');
+                    }
+                    else{
+                            MenuType::findOne(['id'=>$id])->delete();
+                           Yii::$app->session->setFlash('success','Пункт меню успешно удален');
+                    }
+                    return $this->redirect('index');
+                }
+                
+                else{
+                    return $this->render('delete', [
+                    'model' => $model,
+                    'menu_type'=>MenuType::find()->all(),
+                     ]);
+                }
+            }
 
-             return $this->redirect(['index']);
+            else{
+                $this->findModel($id)->delete();
+
+                 return $this->redirect(['index']);
+            }
          }
          else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -160,7 +177,7 @@ class MenuController extends Controller
         if (($model = Menu::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует.');
         }
     }
 }

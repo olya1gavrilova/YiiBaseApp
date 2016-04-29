@@ -69,4 +69,9 @@ class PostSearch extends Post
 
         return $dataProvider;
     }
+    public function isPublished(){
+
+
+      return PostSearch::search(['publish_status'=>'publish']);;
+    }
 }

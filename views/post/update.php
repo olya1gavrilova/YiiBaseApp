@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /* @var $model app\models\Post */
 
 $this->title = 'Обновить пост: ' . ' ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Посты ', 'url' => ['/post/list']];
+$this->params['breadcrumbs'][] = ['label' => 'Посты ', 'url' => ['/post/index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = "Обновить";
 ?>

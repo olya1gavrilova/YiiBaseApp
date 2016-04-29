@@ -21,6 +21,12 @@ class PageController extends Controller
      */
     public function actionIndex()
     {   
+        $dataProvider = new ActiveDataProvider([
+                'query' => Page::find()->where(['status'=>'publish']),
+                 'pagination'=>array(
+                        'pageSize'=>10,
+                      ),
+            ]);
         if(Yii::$app->user->can('page-control'))
         {
             $dataProvider = new ActiveDataProvider([
@@ -29,15 +35,12 @@ class PageController extends Controller
                         'pageSize'=>10,
                       ),
             ]);
-
+        }
             return $this->render('index', [
                 'dataProvider' => $dataProvider,
             ]);
-        }
-        else{
-            throw new ForbiddenHttpException;
-            
-        }
+       
+        
     }
 
     /**
@@ -47,14 +50,10 @@ class PageController extends Controller
      */
     public function actionView($id)
     {
-        $model=Page::find()->where(['url'=>$id])->one();
+        $model=$this->findModel($id);
         return $this->render('view', [
             'model' => $model,
-            'canonical'=>'<link rel="canonical" href="'.dirname(__DIR__).'/post/view/'.$model->url.'" />',
         ]);
-        /* return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);*/
      }
 
     /**
@@ -66,17 +65,16 @@ class PageController extends Controller
     {
         if(Yii::$app->user->can('page-control'))
         {
+
+            $model = new Page(['scenario' => Page::SCENARIO_CREATE]);
             $dataProvider = new ActiveDataProvider([
                 'query' => Page::find(),
             ]);
 
-            $model = new Page();
-
             if ($model->load(Yii::$app->request->post()) ) {
                
                 $model->url = $model->translit($model->title);
-                $model->url =$model->validateUrl();
-
+               
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->url]);
                 
@@ -87,7 +85,7 @@ class PageController extends Controller
             }
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -102,10 +100,11 @@ class PageController extends Controller
     {   
         if(Yii::$app->user->can('page-control'))
         {
-           $model=Page::find()->where(['url'=>$id])->one();
+           $model=$this->findModel($id);
+           $model->scenario=Page::SCENARIO_UPDATE;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->url]);
+                return $this->redirect(['index']);
             } else {
                 return $this->render('update', [
                     'model' => $model,
@@ -113,7 +112,7 @@ class PageController extends Controller
             }
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -128,13 +127,13 @@ class PageController extends Controller
     {
         if(Yii::$app->user->can('page-control'))
         {
-            $model=Page::find()->where(['url'=>$id])->one();
+            $model=$this->findModel($id);
             $model->delete();
 
             return $this->redirect(['index']);
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -148,10 +147,10 @@ class PageController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Page::findOne($id)) !== null) {
+        if (($model = Page::findOne(['url'=>$id])) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашивая страница не существует.');
         }
     }
 }

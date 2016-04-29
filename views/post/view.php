@@ -9,18 +9,16 @@ use yii\widgets\LinkPager;
 /* @var $model app\models\User */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['post/list']];
+$this->params['breadcrumbs'][] = ['label' => 'Посты', 'url' => ['post/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
-    <?=$date?>
 
    <h1><?=$model->title?></h1>
-        Автор: <?=Html::a($author,['index', 'id'=> $model->author_id])?>
+        Автор: <?=Html::a($author,['../user/view', 'id'=> $model->author_id])?>
+         <br />
+        Дата публикации: <?=$model->publish_date?>
         <br />
-        <?php if($ok):?>
-            <div class="alert alert-success" role="alert">Ваш комментарий получен и будет опубликован после подтверждения модератором</div>
-        <?php endif?>
 
 
         <br />
@@ -32,10 +30,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= LinkPager::widget(['pagination' => $pagination]) ?>
         <?php foreach($comments as $comment):?>
             <br />
-            <b><?=$comment->auth_nick?></b> написал <b><?=$comment->date?>:</b><br />
+            Коммент от <b>
+            <?php if($comment->auth_id!='0'):?>
+                <a href="/user/view/<?=$comment->auth_id?>"><?=$comment->auth_nick?></a> 
+            <?php else:?>
+                <?=$comment->auth_nick?>
+            <?php endif?>
+            </b>
+            в <?=$comment->date?>:<br />
+            <b><?=$comment->title?></b><br />
             <?=$comment->text?>
             <br />
             <hr />
         <?php endforeach?>
-            <?=Html::a('Добавить комментарий',['../comments/create','id'=>$model->id] ,['class'=>'btn btn-info']);?>
+            <?=Html::a('Добавить комментарий',Yii::$app->user->isGuest ? ['../comments/create/'.$model->id] : ['../comments/create_comm/'.$model->id] ,['class'=>'btn btn-info']);?>
 </div>

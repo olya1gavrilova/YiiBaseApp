@@ -20,7 +20,7 @@ use yii\web\ForbiddenHttpException;
  */
 class CategoryController extends Controller
 {
-    public function behaviors()
+  /*  public function behaviors()
     {
         return [
             'verbs' => [
@@ -30,7 +30,7 @@ class CategoryController extends Controller
                 ],
             ],
         ];
-    }
+    }*/
 
     /**
      * Lists all Category models.
@@ -96,7 +96,7 @@ class CategoryController extends Controller
         }
         else
         {
-            throw new ForbiddenHttpException;            
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');            
         }
     }
 
@@ -121,7 +121,7 @@ class CategoryController extends Controller
         }
         else
         {
-            throw new ForbiddenHttpException; 
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия'); 
             
         }
     }
@@ -141,7 +141,7 @@ class CategoryController extends Controller
          }
         else
         {
-            throw new ForbiddenHttpException; 
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия'); 
             
         }
     }
@@ -158,7 +158,7 @@ class CategoryController extends Controller
         if (($model = Category::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует.');
         }
     }
 }

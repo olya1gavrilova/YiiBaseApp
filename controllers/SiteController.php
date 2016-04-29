@@ -29,7 +29,7 @@ class SiteController extends Controller
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+               // 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }
@@ -38,7 +38,7 @@ class SiteController extends Controller
     {
         $comments=Comments::find()->where(['post_id'=>$post->id])->andWhere(['status'=>'publish'])->count();
 
-        $posts=Post::find()->orderBy('publish_date DESC')->where(['publish_status'=>'publish'])->limit(3)->all();
+        $posts=Post::isPublished()->orderBy('publish_date DESC')->limit(3)->all();
 
         return $this->render('index', [
             'model' => $model,

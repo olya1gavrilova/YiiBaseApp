@@ -44,7 +44,7 @@ class CommentsController extends Controller
                 ]);
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -56,10 +56,7 @@ class CommentsController extends Controller
      */
     public function actionView($id)
     {
-        if(!Yii::$app->user->isGuest)
-         {
-
-                $dataProvider = new ActiveDataProvider([
+             $dataProvider = new ActiveDataProvider([
                     'query' => Comments::find()->where(['auth_id'=>$id])->orderBy('date DESC'),
                     'pagination'=>array(
                         'pageSize'=>10,
@@ -70,11 +67,6 @@ class CommentsController extends Controller
                     'dataProvider' => $dataProvider,
                     'id'=>$id,
                 ]);
-         }
-        else{
-            throw new ForbiddenHttpException;
-            
-        }
     }
 
     /**
@@ -84,29 +76,56 @@ class CommentsController extends Controller
      */
     public function actionCreate($id)
     {
-        $model = new Comments();
+        if(Yii::$app->user->isGuest)
+        {
+            $model = new Comments(['scenario' => Comments::SCENARIO_CREATE_GUEST ]);
+            $post= Post::find()->where(['id'=>$id])->one();
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->post_id = $id;
+               
+                $model->save();
+                Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
+                return $this->redirect(['../post/view', 'id' => $id]);
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                    'post' => $post,
+                ]);
+        }
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
+        }
+    }
+    public function actionCreate_comm($id)
+    {
+        if(!Yii::$app->user->isGuest){
+        $model = new Comments(['scenario' => Comments::SCENARIO_CREATE]);
         $post= Post::find()->where(['id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $model->post_id = $id;
-            $model->short_text=StringHelper::truncateWords($model['text'], 25);
-            $model->status='draft';
-            if(!Yii::$app->user->isGuest)
-            {
-                $model->auth_email='1@mail.ru';
+              
+                $model->post_id = $id;
                 $model->auth_id=Yii::$app->user->identity->id;
-                $model->auth_nick=Yii::$app->user->identity->username;
-            }
-            $model->save();
-            return $this->redirect(['../post/view', 'id' => $id, 'ok'=>'ok']);
+                $model->auth_nick=Yii::$app->user->identity->username; 
+                //$model->validate();
+                $model->save();
+
+                Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
+                return $this->redirect(['../post/view', 'id' => $id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
                 'post' => $post,
             ]);
         }
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
+        }
     }
+
 
     /**
      * Updates an existing Comments model.
@@ -118,14 +137,19 @@ class CommentsController extends Controller
     {
 
         $model = $this->findModel($id);
+        $model->scenario = Comments::SCENARIO_UPDATE;
+
         if(Yii::$app->user->can('comment-update')  || Comments::isAuthor($model->auth_id) && Comments::isPublished(3 , $id)){
        
-            
-            $thisid=Yii::$app->user->identity->id;
 
-            if ($model->load(Yii::$app->request->post()) &&  $model->save() ) {
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
                
-                return $this->redirect(['index']);
+                Yii::$app->session->setFlash('success','Ваш комментарий обновлен');
+               
+               return $this->render('update', [
+                    'model' => $model,
+                ]);
+                //return $this->redirect(['update', 'model'=>$model]);
             } else {
                 return $this->render('update', [
                     'model' => $model,
@@ -134,7 +158,7 @@ class CommentsController extends Controller
         }
         else{
             Yii::$app->session->setFlash('warning','Срок изменения комментария истек');
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -154,7 +178,7 @@ class CommentsController extends Controller
         }
         else{
 
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -171,7 +195,7 @@ class CommentsController extends Controller
         if (($model = Comments::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует.');
         }
     }
 }
