@@ -8,7 +8,7 @@ use app\models\Page;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Pages';
+$this->title = 'Страницы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pages-index">
@@ -16,7 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Pages', ['create'], ['class' => 'btn btn-success']) ?>
+      <?php if(Yii::$app->user->can('page-control')):?>
+            <?= Html::a('Create Pages', ['create'], ['class' => 'btn btn-success']) ?>
+      <?php endif?>
     </p>
 
     <?= GridView::widget([
@@ -36,11 +38,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
            // 'text:ntext',
             'meta_description',
+            [
+                'attribute'=>'status',
+                'visible'=> Yii::$app->user->can('page-control')
+            ],
             
             ['class' => 'yii\grid\ActionColumn',
             'urlCreator'=>function($action, $model, $key, $index){
                      return \yii\helpers\Url::to(['page/'.$action.'/'.$model->url]);
-             }
+                },
+            'visible'=> Yii::$app->user->can('page-control')
          
             ],
         ],

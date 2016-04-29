@@ -21,6 +21,12 @@ class PageController extends Controller
      */
     public function actionIndex()
     {   
+        $dataProvider = new ActiveDataProvider([
+                'query' => Page::find()->where(['status'=>'publish']),
+                 'pagination'=>array(
+                        'pageSize'=>10,
+                      ),
+            ]);
         if(Yii::$app->user->can('page-control'))
         {
             $dataProvider = new ActiveDataProvider([
@@ -29,15 +35,12 @@ class PageController extends Controller
                         'pageSize'=>10,
                       ),
             ]);
-
+        }
             return $this->render('index', [
                 'dataProvider' => $dataProvider,
             ]);
-        }
-        else{
-            throw new ForbiddenHttpException;
-            
-        }
+       
+        
     }
 
     /**
@@ -71,8 +74,7 @@ class PageController extends Controller
             if ($model->load(Yii::$app->request->post()) ) {
                
                 $model->url = $model->translit($model->title);
-                $model->url =$model->validateUrl();
-
+               
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->url]);
                 
@@ -102,7 +104,7 @@ class PageController extends Controller
            $model->scenario=Page::SCENARIO_UPDATE;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->url]);
+                return $this->redirect(['index']);
             } else {
                 return $this->render('update', [
                     'model' => $model,

@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>Дата</td>
                 <td>Название</td>
                 <td>Анонс</td>
-                <td></td>
+                
             </tr>
         <?php foreach($posts as $post):?>
            <tr>
@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                      <?php else:?>
                         <td><?=StringHelper::truncateWords($post->content, 25)?></td>
                      <?php endif?>
-                <td><?=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?></td>
+                <?//=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?>
             </tr>
          <?php endforeach?>  
     </table>
@@ -151,7 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>Дата</td>
                 <td>Пост</td>
                 <td>Текст комментария</td>
-                <td></td>
+                
             </tr>
             <?php foreach($comments as $comment):?>
            <tr>
@@ -160,7 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=Html::a($comment->title,['../post/view/'. $comment->post_id])?></td>
                     <td><?=$comment->short_text?></td>
                 
-                <td><?=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?></td>
+                <?//=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?>
             </tr>
          <?php endforeach?>  
 

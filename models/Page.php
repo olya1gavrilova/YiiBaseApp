@@ -34,9 +34,10 @@ class Page extends \yii\db\ActiveRecord
         return [
             [['title', 'text', 'meta_description'], 'required', 'on'=>self::SCENARIO_CREATE],
             [['title', 'text'], 'required', 'on'=>self::SCENARIO_UPDATE],
-            [['text'], 'string'],
+            [['text','status'], 'string'],
             [['title'], 'string', 'max' => 48],
             [['url'], 'string', 'max' => 120],
+            [['url'], 'validateUrl', 'on'=>self::SCENARIO_CREATE],
             [['meta_description'], 'string', 'max' => 255],
            
         ];

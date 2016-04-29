@@ -30,6 +30,7 @@ use vova07\imperavi\Widget;
     ])->label('Текст страницы'); ?>
 
     <?= $form->field($model, 'meta_description')->textInput(['maxlength' => true]) ?>
+     <?= $form->field($model, 'status')->dropDownList([ 'draft' => 'Draft', 'publish' => 'Publish', ])->label('Публикация') ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
