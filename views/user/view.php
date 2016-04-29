@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use app\models\Role;
 
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 
 /* @var $this yii\web\View */
@@ -131,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
            <tr>
                
                     <td><?=$post->publish_date?></td>
-                    <td><?=Html::a($post->title,['../post/view/'.$post->id])?></td>
+                    <td><?=Html::a($post->title,Url::to(['post/view','id'=>$post->id]))?></td>
                     <?php if($post->anons !=""):?>
                          <td><?=$post->anons?></td>
                      <?php else:?>
@@ -141,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
          <?php endforeach?>  
     </table>
-     <?=Html::a('Все посты '.$model->username, ['../post/index/'. $model->id], ['class' => 'btn btn-primary'])?>
+     <?=Html::a('Все посты '.$model->username, Url::to(['post/index', 'id'=> $model->id]), ['class' => 'btn btn-primary'])?>
     <br /><hr />
 
 
@@ -157,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
            <tr>
                
                     <td><?=$comment->date?></td>
-                    <td><?=Html::a($comment->title,['../post/view/'. $comment->post_id])?></td>
+                    <td><?=Html::a($comment->title,Url::to(['post/view','id'=> $comment->post_id]))?></td>
                     <td><?=StringHelper::truncateWords($comment->text, 25)?></td>
                 
                 <?//=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?>
@@ -165,5 +166,5 @@ $this->params['breadcrumbs'][] = $this->title;
          <?php endforeach?>  
 
     </table>
-     <?=Html::a('Все комментарии '.$model->username, ['../comments/view/'.$model->id], ['class' => 'btn btn-primary'])?>
+     <?=Html::a('Все комментарии '.$model->username, Url::to(['comments/view', 'id'=>$model->id]), ['class' => 'btn btn-primary'])?>
 </div>
