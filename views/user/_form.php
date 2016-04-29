@@ -20,6 +20,7 @@ use app\models\User;
     <?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

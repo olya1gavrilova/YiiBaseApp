@@ -20,7 +20,7 @@ use yii\web\ForbiddenHttpException;
  */
 class CategoryController extends Controller
 {
-    public function behaviors()
+  /*  public function behaviors()
     {
         return [
             'verbs' => [
@@ -30,7 +30,7 @@ class CategoryController extends Controller
                 ],
             ],
         ];
-    }
+    }*/
 
     /**
      * Lists all Category models.

@@ -92,7 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <tr>
                     <td>E-mail</td>
-                    <td></td>
+                    <td><?=$model->email?></td>
                 </tr>
             
             <?php if (Yii::$app->user->can('role-update')):?>

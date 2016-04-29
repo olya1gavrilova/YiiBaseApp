@@ -22,9 +22,10 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
     public $newPasswordConfirm;
 
 
-
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
     /**
-     * @inheritdoc
+     * @intval(var)heritdoc
      */
     public static function tableName()
     {
@@ -32,6 +33,16 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
     }
    
     public $new_password;
+    public $captcha;
+
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_CREATE => [ 'first_name', 'username','email', 'password', 'captcha'],
+            self::SCENARIO_UPDATE => [ 'last_name', 'first_name', 'username','email',],
+        ];
+    }
    
     /**
      * @inheritdoc
@@ -40,10 +51,12 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
     {
         
         return [
-            [['last_name', 'first_name', 'username', 'password', 'access_token'], 'required','on' => 'create'],
-            [['last_name', 'first_name', 'username', ], 'required','on' => 'update'],
+            [['first_name', 'username', 'email', 'password','captcha'], 'required','on' => self::SCENARIO_CREATE],
+            [['first_name', 'username', 'email', ], 'required','on' => self::SCENARIO_UPDATE],
             [['last_name', 'first_name'], 'string', 'max' => 45],
             [['username'], 'string', 'max' => 15],
+            ['email','email'],
+            ['captcha','captcha'],
             ['username', 'unique', 'message'=>'Этот никнейм уже занят'],
             [['password', 'auth_key', 'access_token'], 'string', 'max' => 32],
 

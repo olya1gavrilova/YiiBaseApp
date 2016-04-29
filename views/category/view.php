@@ -6,6 +6,7 @@ use yii\widgets\DetailView;
 use app\models\User;
 use yii\widgets\LinkPager;
 use app\models\Comments;
+use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Category */
@@ -17,9 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php foreach($posts as $post):?>
             <h3><?=$post->title?></h3>
-            Автор: <b><?=Html::a(User::find()->where(['id' => $post->author_id])->one()->username, ['post/index', 'id' => $post->author_id])?></b>
+            Автор: <b><?=Html::a(User::find()->where(['id' => $post->author_id])->one()->username, ['user/view', 'id' => $post->author_id])?></b>
             <br /> <br />
-            <?=$post->anons?>
+            <?php if($post->anons !=""):?>
+                         <?=$post->anons?>
+                <?php else:?>
+                        <?=StringHelper::truncateWords($post->content, 50)?>
+            <?php endif?>
             <br /><br />
             <b> <?=Comments::find()->where(['post_id'=>$post->id])->andWhere(['status'=>'publish'])->count();?> </b> Комментариев
             <br /><br />

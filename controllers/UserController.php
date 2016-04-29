@@ -108,7 +108,7 @@ class UserController extends Controller
             return $this->goHome();
         }
 
-        $model = new User();
+        $model = new User(['scenario' => Comments::SCENARIO_CREATE]);
         
         $assignments= new Assignments();
         
@@ -123,13 +123,15 @@ class UserController extends Controller
             else{
             $model->access_token=$model->tokenGenerator();
             $model->password=md5($model->password);
-            $model->validate();
+            //$model->validate();
             $model->save();
 
             $id=User::findIdentityByAccessToken($model->access_token)->id;
             $assignments->user_id=$id;
             $assignments->item_name='user';
             $assignments->save();
+
+            Yii::$app->session->setFlash('success','Вы зарегистрированы на сайте. Введите свой логин и пароль для входа');
             return $this->redirect(['../site/login']);
            }
         }
@@ -148,10 +150,11 @@ class UserController extends Controller
     //РЕДАКТИРОВАТЬ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
     public function actionUpdate($id)
     {
-        $user = new User;
+        $user = new User();
 
         if(Yii::$app->user->can('user-update') || $user->isAuthor($id)){
             $model = $this->findModel($id);
+            $model->scenario=User::SCENARIO_UPDATE;
 
             if ($model->load(Yii::$app->request->post()) && $model->validate())
             {
