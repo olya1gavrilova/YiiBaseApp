@@ -158,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
                
                     <td><?=$comment->date?></td>
                     <td><?=Html::a($comment->title,['../post/view/'. $comment->post_id])?></td>
-                    <td><?=$comment->short_text?></td>
+                    <td><?=StringHelper::truncateWords($comment->text, 25)?></td>
                 
                 <?//=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?>
             </tr>

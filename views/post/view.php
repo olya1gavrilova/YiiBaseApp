@@ -30,10 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= LinkPager::widget(['pagination' => $pagination]) ?>
         <?php foreach($comments as $comment):?>
             <br />
-            <b><?=$comment->auth_nick?></b> написал <b><?=$comment->date?>:</b><br />
+            Коммент от <b><?=$comment->auth_nick?></b> в <?=$comment->date?>:<br />
+            <b><?=$comment->title?></b><br />
             <?=$comment->text?>
             <br />
             <hr />
         <?php endforeach?>
-            <?=Html::a('Добавить комментарий',['../comments/create/'.$model->id] ,['class'=>'btn btn-info']);?>
+            <?=Html::a('Добавить комментарий',Yii::$app->user->isGuest ? ['../comments/create/'.$model->id] : ['../comments/create_comm/'.$model->id] ,['class'=>'btn btn-info']);?>
 </div>

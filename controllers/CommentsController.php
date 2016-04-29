@@ -76,30 +76,56 @@ class CommentsController extends Controller
      */
     public function actionCreate($id)
     {
+        if(Yii::$app->user->isGuest)
+        {
+            $model = new Comments(['scenario' => Comments::SCENARIO_CREATE_GUEST ]);
+            $post= Post::find()->where(['id'=>$id])->one();
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->post_id = $id;
+               
+                $model->save();
+                Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
+                return $this->redirect(['../post/view', 'id' => $id]);
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                    'post' => $post,
+                ]);
+        }
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав.');
+        }
+    }
+    public function actionCreate_comm($id)
+    {
+        if(!Yii::$app->user->isGuest){
         $model = new Comments(['scenario' => Comments::SCENARIO_CREATE]);
         $post= Post::find()->where(['id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $model->post_id = $id;
-            $model->short_text=StringHelper::truncateWords($model['text'], 25);
-            $model->status='draft';
-            if(!Yii::$app->user->isGuest)
-            {
-                $model->auth_email='1@mail.ru';
+              
+                $model->post_id = $id;
                 $model->auth_id=Yii::$app->user->identity->id;
-                $model->auth_nick=Yii::$app->user->identity->username;
-            }
-            $model->save();
-            Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
-            return $this->redirect(['../post/view', 'id' => $id]);
+                $model->auth_nick=Yii::$app->user->identity->username; 
+                //$model->validate();
+                $model->save();
+
+                Yii::$app->session->setFlash('success','Ваш комментарий добавлен и ожидает модерации');
+                return $this->redirect(['../post/view', 'id' => $id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
                 'post' => $post,
             ]);
         }
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав.');
+        }
     }
+
 
     /**
      * Updates an existing Comments model.
@@ -115,12 +141,15 @@ class CommentsController extends Controller
 
         if(Yii::$app->user->can('comment-update')  || Comments::isAuthor($model->auth_id) && Comments::isPublished(3 , $id)){
        
-            
-            $thisid=Yii::$app->user->identity->id;
 
-            if ($model->load(Yii::$app->request->post()) &&  $model->save() ) {
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
                
-                return $this->redirect(['index']);
+                Yii::$app->session->setFlash('success','Ваш комментарий обновлен');
+               
+               return $this->render('update', [
+                    'model' => $model,
+                ]);
+                //return $this->redirect(['update', 'model'=>$model]);
             } else {
                 return $this->render('update', [
                     'model' => $model,
