@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<?php $form = ActiveForm::begin(); ?>
 
          <?=$form->field($model, 'id')->dropDownList(ArrayHelper::map($menu_type, 'id', 'menu_type'))->label('Выберите меню для удаления') ?>
-         <?= Html::submitButton( 'Назначить новую роль',['class' => 'btn btn-warning']) ?>
+         <?= Html::submitButton( 'Удалить меню',['class' => 'btn btn-info']) ?>
 
     <?php ActiveForm::end(); ?>
    
