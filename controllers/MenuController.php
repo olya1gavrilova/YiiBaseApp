@@ -29,7 +29,7 @@ class MenuController extends Controller
             return $this->render('index');
         }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
         
@@ -75,7 +75,7 @@ class MenuController extends Controller
             }
         }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -111,7 +111,7 @@ class MenuController extends Controller
                 }
         }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -157,7 +157,7 @@ class MenuController extends Controller
             }
          }
          else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -174,7 +174,7 @@ class MenuController extends Controller
         if (($model = Menu::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует.');
         }
     }
 }

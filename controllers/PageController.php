@@ -85,7 +85,7 @@ class PageController extends Controller
             }
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -112,7 +112,7 @@ class PageController extends Controller
             }
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -133,7 +133,7 @@ class PageController extends Controller
             return $this->redirect(['index']);
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -150,7 +150,7 @@ class PageController extends Controller
         if (($model = Page::findOne(['url'=>$id])) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашивая страница не существует.');
         }
     }
 }

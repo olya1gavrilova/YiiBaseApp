@@ -44,7 +44,7 @@ class CommentsController extends Controller
                 ]);
          }
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -95,7 +95,7 @@ class CommentsController extends Controller
         }
         }
         else{
-            throw new ForbiddenHttpException('Недостаточно прав.');
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
         }
     }
     public function actionCreate_comm($id)
@@ -122,7 +122,7 @@ class CommentsController extends Controller
         }
         }
         else{
-            throw new ForbiddenHttpException('Недостаточно прав.');
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
         }
     }
 
@@ -158,7 +158,7 @@ class CommentsController extends Controller
         }
         else{
             Yii::$app->session->setFlash('warning','Срок изменения комментария истек');
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -178,7 +178,7 @@ class CommentsController extends Controller
         }
         else{
 
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -195,7 +195,7 @@ class CommentsController extends Controller
         if (($model = Comments::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует.');
         }
     }
 }

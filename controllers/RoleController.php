@@ -90,7 +90,7 @@ class RoleController extends Controller
         }
         else
         {
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -147,7 +147,7 @@ class RoleController extends Controller
             }
          }
          else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
          }
     }
 
@@ -220,7 +220,7 @@ class RoleController extends Controller
             }
 
         else{
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             
         }
     }
@@ -293,7 +293,7 @@ class RoleController extends Controller
         if (($model = Role::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая страница не существует.');
         }
     }
 }

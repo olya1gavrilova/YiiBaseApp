@@ -141,7 +141,7 @@ class PostController extends Controller
          }
          else
             {
-                 throw new ForbiddenHttpException;
+                 throw new ForbiddenHttpException('Недостаточно прав для совершения этого действия');
             }
 
     }
