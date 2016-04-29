@@ -8,6 +8,8 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Role;
 
+use yii\helpers\StringHelper;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UserSearch */
@@ -130,13 +132,16 @@ $this->params['breadcrumbs'][] = $this->title;
                
                     <td><?=$post->publish_date?></td>
                     <td><?=Html::a($post->title,['../post/view/'.$post->id])?></td>
-                    <td><?=$post->anons?></td>
-                
+                    <?php if($post->anons !=""):?>
+                         <td><?=$post->anons?></td>
+                     <?php else:?>
+                        <td><?=StringHelper::truncateWords($post->content, 25)?></td>
+                     <?php endif?>
                 <td><?=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?></td>
             </tr>
          <?php endforeach?>  
     </table>
-     <?=Html::a('Все посты '.$model->username, ['../post/all/'. $model->id], ['class' => 'btn btn-primary'])?>
+     <?=Html::a('Все посты '.$model->username, ['../post/index/'. $model->id], ['class' => 'btn btn-primary'])?>
     <br /><hr />
 
 

@@ -25,11 +25,6 @@ use app\models\User;
         <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         
     </div>
-    
-        
-
-
-
 
     <?php ActiveForm::end(); ?>
 

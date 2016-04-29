@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
+use app\models\Page;
+
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -24,7 +26,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title',
-            'url:url',
+            //'url',
+            [
+                'attribute' => 'url',
+                'value' => function (Page $data) {
+                    return Html::a(Html::encode($data->url), \yii\helpers\Url::to(['page/view', 'id' => $data->url]));
+                },
+                'format' => 'raw',
+            ],
            // 'text:ntext',
             'meta_description',
             

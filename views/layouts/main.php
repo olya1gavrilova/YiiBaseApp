@@ -45,7 +45,7 @@ AppAsset::register($this);
          $items[]=['label' => 'Личный кабинет', 'url' => ['/user/view', 'id'=>Yii::$app->user->identity->id], 'visible' => !Yii::$app->user->isGuest];
 
          foreach (Menu::find()->where(['type'=>1])->all() as $menu) {
-             $items[]= ['label' => $menu->menu_item, 'url' =>$menu->menu_url];
+             $items[]= ['label' => $menu->menu_item, 'url' =>[$menu->menu_url]];
         }
 
         $items[]=['label' => 'Login', 'url' => ['/site/login'], 'visible' => Yii::$app->user->isGuest];
