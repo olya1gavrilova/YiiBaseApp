@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 
 use app\models\User;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -22,7 +23,7 @@ $this->params['breadcrumbs'][] = 'Редактировать';
 
      <?php if(User::isAuthor($id)):?>
 
-             <?= Html::a('Изменить пароль','../change_password', ['class' => 'btn btn-info']) ?>
+             <?= Html::a('Изменить пароль', Url::to(['user/change_password']), ['class' => 'btn btn-info']) ?>
 
     <?php endif?>
     <br /><br />

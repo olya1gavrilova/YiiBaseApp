@@ -22,53 +22,53 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-view">
     <h1><?= Html::encode($this->title) ?></h1>
 
-<?php if(Yii::$app->user->can('role-list') || User::isAuthor($id)):?>
+<?php if(Yii::$app->user->can('role-list') || User::isAuthor($id)) :?>
     <div class='row'> 
-      <?php if (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list')):?>
+      <?php if (User::isAuthor($id) && (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list'))):?>
         <div class='col-md-6'>
         <h2>Функции</h2>
         <table class='table table-bordered'>
             <?php if (Yii::$app->user->can('menu-access')):?>
             <tr>
                 <td>Редактирование меню</td>
-                <td><?=Html::a('Перейти', '/menu/index', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', Url::to(['menu/index']), ['class' => 'btn btn-info'])?></td>
             </tr>
             <?php endif?> 
             <?php if (Yii::$app->user->can('page-control')):?>
             <tr>
                 <td>Редактирование статических страниц</td>
-                <td><?=Html::a('Перейти', '/page/index', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', Url::to(['page/index']), ['class' => 'btn btn-info'])?></td>
             </tr>
             <?php endif?> 
 
             <?php if (Yii::$app->user->can('role-list')):?>
             <tr>
                 <td>Управление ролями</td>
-                <td><?=Html::a('Перейти', '/roles', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', Url::to(['role/index']), ['class' => 'btn btn-info'])?></td>
             </tr>
           <?php endif?>  
           <?php if (Yii::$app->user->can('delete-post') || Yii::$app->user->can('update-post')):?>  
             <tr>
                 <td>Управление постами</td>
-                <td><?=Html::a('Перейти', '/post/index', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', Url::to(['post/index']), ['class' => 'btn btn-info'])?></td>
             </tr>
            <?php endif?> 
            <?php if (Yii::$app->user->can('comment-list')):?>
             <tr>
                 <td>Управление комментариями</td>
-                <td><?=Html::a('Перейти', '/comments/index', ['class' => 'btn btn-info '])?></td>
+                <td><?=Html::a('Перейти', Url::to(['comments/index']), ['class' => 'btn btn-info '])?></td>
             </tr>
             <?php endif?>
             <?php if (Yii::$app->user->can('category-update')):?>
             <tr>
                 <td>Создать категорию</td>
-                <td><?=Html::a('Перейти', '/category/create', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', Url::to(['category/create']), ['class' => 'btn btn-info'])?></td>
             </tr>
             <?php endif?>
             <?php if (Yii::$app->user->can('user-update')):?>
             <tr>
                 <td>Все пользователи</td>
-                <td><?=Html::a('Перейти', '/user/index', ['class' => 'btn btn-info'])?></td>
+                <td><?=Html::a('Перейти', Url::to(['user/index']), ['class' => 'btn btn-info'])?></td>
             </tr>
             <?php endif?>
          </table> 
@@ -100,8 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td>Статус</td>
                     <td>
-                        <b><?//=$role->item_name;?></b>
-
+                        
                          <?php $form = ActiveForm::begin(); ?>
 
                             <?=$form->field($role, 'item_name')->dropDownList(ArrayHelper::map($roles, 'name', 'description'))->label('') ?>
@@ -113,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endif?>
             </table>
                
-             <?=Html::a('Редактировать данные', ['update', 'id' => $model->id], ['class' => 'btn btn-primary col-md-offset-2'])?>
+             <?=Html::a('Редактировать данные', Url::to(['update', 'id' => $model->id]), ['class' => 'btn btn-primary col-md-offset-2'])?>
             
             </div>
         </div>
@@ -138,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                      <?php else:?>
                         <td><?=StringHelper::truncateWords($post->content, 25)?></td>
                      <?php endif?>
-                <?//=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?>
+               
             </tr>
          <?php endforeach?>  
     </table>
@@ -160,8 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=$comment->date?></td>
                     <td><?=Html::a($comment->title,Url::to(['post/view','id'=> $comment->post_id]))?></td>
                     <td><?=StringHelper::truncateWords($comment->text, 25)?></td>
-                
-                <?//=Html::a('Редактировать',['../post/update/'.$post->id], ['class' => 'btn btn-info btn-xs'])?>
+               
             </tr>
          <?php endforeach?>  
 

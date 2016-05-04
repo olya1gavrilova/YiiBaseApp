@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 use app\models\Page;
-
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'url',
                 'value' => function (Page $data) {
-                    return Html::a(Html::encode($data->url), \yii\helpers\Url::to(['page/view', 'id' => $data->url]));
+                    return Html::a(Html::encode($data->url), Url::to(['page/view', 'id' => $data->url]));
                 },
                 'format' => 'raw',
             ],
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             
             ['class' => 'yii\grid\ActionColumn',
             'urlCreator'=>function($action, $model, $key, $index){
-                     return \yii\helpers\Url::to(['page/'.$action.'/'.$model->url]);
+                     return Url::to(['page/'.$action.'/'.$model->url]);
                 },
             'visible'=> Yii::$app->user->can('page-control')
          

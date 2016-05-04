@@ -15,6 +15,7 @@ use yii\helpers\StringHelper;
 use app\models\Comments;
 use app\models\Menu;
 use app\components\AlertWidget;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -80,7 +81,7 @@ AppAsset::register($this);
                 <br /><br />
 
                 <?php foreach(Comments::find()->where(['status'=>'publish'])->OrderBy('date DESC')->limit(3)->all() as $comment):?>
-                <?=Html::a(Post::find()->where(['id'=>$comment->post_id])->one()->title, ['post/view', 'id'=>$comment->post_id])?>
+                <?=Html::a(Post::find()->where(['id'=>$comment->post_id])->one()->title, Url::to(['post/view', 'id'=>$comment->post_id]))?>
                 <br />
                 
                 Коммент от <b><?=$comment->auth_nick?>:</b>
