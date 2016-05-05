@@ -74,6 +74,7 @@ class MessageController extends Controller
         $messages= Message::isVisible()->andWhere(['or',['to_id'=>$id, 'from_id'=>$author_id],['from_id'=>$id, 'to_id'=>$author_id]])->orderBy('id DESC')->all();
        
             if ($model->load(Yii::$app->request->post())) {
+                //два диалога нужно, чтобы при удалении диалога одним пользователем, он был доступен для другого.
                 if(!Dialog::find()->where(['to_id'=>$id, 'from_id'=>$author_id])->one()) {
                     $dialog=new Dialog;
                     $dialog->from_id=$author_id;

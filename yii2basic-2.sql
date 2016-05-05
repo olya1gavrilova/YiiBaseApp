@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 29 2016 г., 16:52
+-- Время создания: Май 05 2016 г., 13:27
 -- Версия сервера: 5.5.41-log
 -- Версия PHP: 5.6.3
 
@@ -221,8 +221,35 @@ INSERT INTO `comments` (`id`, `auth_id`, `post_id`, `auth_nick`, `auth_email`, `
 (31, 1, 15, 'admin', '1@mail.ru', 'asdfadfsafsd', 'adsfadsfasdf`q43werqwead', 'publish', '2016-04-28 13:00:21'),
 (53, 1, 15, 'admin', '', 'Это новый коммент2', '123452-22', 'publish', '2016-04-29 13:08:39'),
 (54, 1, 10, 'admin', '', 'Новый текст проверки сценария', 'Новый текст проверки сценария', 'publish', '2016-04-29 13:25:08'),
-(55, 4, 15, 'Anna', '', 'коммент от анны23', 'фвыфывфавы', 'publish', '2016-04-29 13:25:58'),
+(55, 4, 15, 'Anna', '', 'коммент от анны23', 'фвыфывфавы', 'draft', '2016-04-29 13:25:58'),
 (56, 0, 13, 'Вася 2', '3131@mads.ru', 'Без заголовка', 'Новый текст комментаия', 'draft', '2016-04-29 13:36:41');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `dialog`
+--
+
+CREATE TABLE IF NOT EXISTS `dialog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_id` int(11) unsigned NOT NULL,
+  `to_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `from_id` (`from_id`),
+  KEY `to_id` (`to_id`),
+  KEY `to_id_2` (`to_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+--
+-- Дамп данных таблицы `dialog`
+--
+
+INSERT INTO `dialog` (`id`, `from_id`, `to_id`) VALUES
+(9, 1, 3),
+(10, 3, 1),
+(11, 1, 2),
+(12, 2, 1),
+(15, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -274,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `menu_url` varchar(255) NOT NULL,
   `type` int(10) NOT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- Дамп данных таблицы `menu`
@@ -299,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `menu_type` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `menu_type` varchar(24) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Дамп данных таблицы `menu_type`
@@ -308,6 +335,57 @@ CREATE TABLE IF NOT EXISTS `menu_type` (
 INSERT INTO `menu_type` (`id`, `menu_type`) VALUES
 (1, 'main'),
 (2, 'aside');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `message`
+--
+
+CREATE TABLE IF NOT EXISTS `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_id` int(11) unsigned NOT NULL,
+  `to_id` int(11) unsigned NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `text` text NOT NULL,
+  `deleted_by` varchar(10) NOT NULL DEFAULT '0',
+  `viewed` enum('0','1') NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `to_id` (`to_id`),
+  KEY `from_id` (`from_id`),
+  KEY `from_id_2` (`from_id`),
+  KEY `from_id_3` (`from_id`),
+  KEY `to_id_2` (`to_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+
+--
+-- Дамп данных таблицы `message`
+--
+
+INSERT INTO `message` (`id`, `from_id`, `to_id`, `date`, `text`, `deleted_by`, `viewed`) VALUES
+(1, 1, 2, '0000-00-00 00:00:00', 'adadsfadfs', '1', '0'),
+(2, 1, 2, '0000-00-00 00:00:00', 'adsfasdfadsf', '1', '0'),
+(3, 1, 2, '2016-05-04 11:30:39', 'Это новое сообщение', '0', '0'),
+(4, 2, 1, '2016-05-04 11:35:43', 'Это новое сообщение от собеседника', '0', '0'),
+(5, 2, 1, '2016-05-04 11:35:53', 'Это второе новое сообщение от собеседника', '0', '0'),
+(6, 1, 2, '2016-05-04 11:36:55', 'А это новое сообщение от меня', '0', '0'),
+(7, 1, 3, '2016-05-04 12:52:42', 'Новое сообщение пользователю 3\r\n', '1', '0'),
+(8, 1, 3, '2016-05-04 12:59:50', 'Это второй текст пользователю 3', '1', '0'),
+(9, 1, 3, '2016-05-04 13:00:08', 'А это третье сообщение', '1', '0'),
+(10, 4, 1, '2016-05-04 13:03:39', 'adsfasdf', '1', '0'),
+(11, 3, 1, '2016-05-04 13:04:16', 'Это диалог 2\r\n', '1', '0'),
+(12, 4, 1, '2016-05-04 13:05:23', 'Это тоже сообщение', '1', '0'),
+(13, 4, 2, '2016-05-04 13:06:42', 'Это новый диалог', '1', '0'),
+(14, 4, 1, '2016-05-04 13:07:04', 'Это тоже диалог', '1', '0'),
+(15, 4, 1, '2016-05-04 13:07:26', 'А это тест', '1', '0'),
+(16, 4, 1, '2016-05-04 13:08:21', 'B ''njafl;kjdj;kfadj;kadfs;lkjadfs', '1', '0'),
+(17, 1, 13, '2016-05-04 14:01:24', 'Это диалог с юзером 13', '0', '0'),
+(18, 1, 15, '2016-05-04 14:02:31', 'Это новый диалог\r\n', '0', '0'),
+(19, 1, 3, '2016-05-04 14:03:42', 'Это третье сообщение\r\n', '0', '0'),
+(20, 1, 2, '2016-05-04 14:04:07', 'А Это второе сообщение\r\n', '0', '0'),
+(21, 1, 4, '2016-05-04 14:04:16', 'А это пятое\r\n', '1', '0'),
+(22, 1, 3, '2016-05-04 15:51:45', 'Высшая арифметика, в первом приближении, традиционно трансформирует интеграл Пуассона. Предел последовательности, в первом приближении, упорядочивает возрастающий интеграл от функции комплексной переменной. Многочлен, в первом приближении, накладывает предел последовательности. Если после применения правила Лопиталя неопределённость типа 0 / 0 осталась, поле направлений специфицирует контрпример. Стоит отметить, что аксиома существенно концентрирует математический анализ. Окрестность точки неоднозначна.\r\n\r\nГеодезическая линия вырождена. Дело в том, что интегрирование по частям накладывает абстрактный интеграл Гамильтона. Контрпример, как следует из вышесказанного, привлекает отрицательный математический анализ, что известно даже школьникам. Математическое моделирование однозначно показывает, что контрпример неограничен сверху. Несмотря на сложности, расходящийся ряд изящно порождает определитель системы линейных уравнений. Рациональное число поддерживает интеграл по ориентированной области.', '0', '0'),
+(23, 4, 1, '2016-05-05 10:00:42', 'Новое сообщение', '1', '0');
 
 -- --------------------------------------------------------
 
@@ -497,6 +575,20 @@ ALTER TABLE `auth_item`
 ALTER TABLE `auth_item_child`
   ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `dialog`
+--
+ALTER TABLE `dialog`
+  ADD CONSTRAINT `dialog_ibfk_2` FOREIGN KEY (`to_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `dialog_ibfk_1` FOREIGN KEY (`from_id`) REFERENCES `user` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `message`
+--
+ALTER TABLE `message`
+  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`to_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`from_id`) REFERENCES `user` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `tbl_post`
