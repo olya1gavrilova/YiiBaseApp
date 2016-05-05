@@ -52,14 +52,19 @@ class MessageController extends Controller
      */
     public function actionIndex()
     {
-        $id=Yii::$app->user->identity->id;
+        if(!Yii::$app->user->isGuest){
+            $id=Yii::$app->user->identity->id;
 
-            $data = Dialog::find()->where(['from_id'=>$id])->all();
-        
+                $data = Dialog::find()->where(['from_id'=>$id])->all();
+            
 
-        return $this->render('index', [
-            'data' => $data,
-        ]);
+            return $this->render('index', [
+                'data' => $data,
+            ]);
+        }
+         else{
+            throw new ForbiddenHttpException('Чтобы вести диалоги необходимо авторизоваться на сайте');
+        }  
     }
 
     /**
@@ -69,6 +74,7 @@ class MessageController extends Controller
      */
     public function actionCreate($id)
     {
+        if(!Yii::$app->user->isGuest){
         $model = new Message();
         $author_id =Yii::$app->user->identity->id;
         $messages= Message::isVisible()->andWhere(['or',['to_id'=>$id, 'from_id'=>$author_id],['from_id'=>$id, 'to_id'=>$author_id]])->orderBy('id DESC')->all();
@@ -98,7 +104,10 @@ class MessageController extends Controller
                     'messages'=>$messages,
                 ]);
             }
-        
+        }
+        else{
+            throw new ForbiddenHttpException('Для того, чтобы написать сообщение пользователю необходимо авторизоваться на сайте');
+        }
     }
 
     /**
@@ -129,32 +138,44 @@ class MessageController extends Controller
      */
     public function actionDelete($id)
     {
-        $model=$this->findModel($id);
-       
-        Message::deleteMessage($model);
+        if(!Yii::$app->user->isGuest){
 
-        if( $model->to_id==Yii::$app->user->identity->id)
-        {
-            $redirect_id=$model->from_id;
+            $model=$this->findModel($id);
+           
+            Message::deleteMessage($model);
+
+            if( $model->to_id==Yii::$app->user->identity->id)
+            {
+                $redirect_id=$model->from_id;
+            }
+            else{
+                $redirect_id=$model->to_id;
+            }
+           Yii::$app->session->setFlash('success','Сообщение удалено');
+
+            return $this->redirect(['create','id'=>$redirect_id]);
         }
         else{
-            $redirect_id=$model->to_id;
+            throw new ForbiddenHttpException('Недостаточно прав');
         }
-       Yii::$app->session->setFlash('success','Сообщение удалено');
-
-        return $this->redirect(['create','id'=>$redirect_id]);
     }
     public function actionDelete_dialog($id)
     {
-        $models=Message::find()->where(['or', ['from_id'=>$id], ['to_id'=>$id]])->all();
-        
-        foreach($models as $model){
-            Message::deleteMessage($model);
-        }
+        if(!Yii::$app->user->isGuest){
 
-        Dialog::deleteDialog($id);
-        Yii::$app->session->setFlash('success','Диалог удален');
-        return $this->redirect(['index']);
+            $models=Message::find()->where(['or', ['from_id'=>$id], ['to_id'=>$id]])->all();
+            
+            foreach($models as $model){
+                Message::deleteMessage($model);
+            }
+
+            Dialog::deleteDialog($id);
+            Yii::$app->session->setFlash('success','Диалог удален');
+            return $this->redirect(['index']);
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав');
+        }
     }
 
     /**
