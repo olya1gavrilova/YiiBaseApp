@@ -68,4 +68,12 @@ class Dialog extends \yii\db\ActiveRecord
         $id= Message::isVisible()->andwhere(['or',['to_id'=>$this->from_id, 'from_id'=>$this->to_id],['from_id'=>$this->from_id, 'to_id'=>$this->to_id]])->max('id');
         return Message::findOne($id);
     }
+
+    public function deleteDialog($id)
+    {
+         
+        $dialog=Dialog::find()->where(['to_id'=>$id])->one();
+            $dialog->delete();
+        
+    }
 }

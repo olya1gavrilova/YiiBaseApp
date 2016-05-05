@@ -24,12 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td>Имя</td>
                 <td>Последнее сообщение</td>
+                <td></td>
             </tr>
             <?php foreach($data as $partner):?>
                 <tr>
                 
-                    <td><?=$partner->to->username?></td>
+                    <td><?=Html::a($partner->to->username, Url::to(['user/view','id'=>$partner->to_id]))?></td>
                     <td><?=Html::a(StringHelper::truncateWords($partner->lastmessage->text, 20), Url::to(['create','id'=>$partner->to_id]))?></td>
+                    <td><?=Html::a('Удалить диалог', Url::to(['delete_dialog','id'=>$partner->to_id]), ['class'=>'btn btn-success btn-xs'])?></td>
                 </tr>
              <?php endforeach?>
         </table>

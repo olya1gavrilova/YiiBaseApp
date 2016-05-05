@@ -129,13 +129,9 @@ class MessageController extends Controller
     public function actionDelete($id)
     {
         $model=$this->findModel($id);
-        if($model->deleted_by=='0' || $model->deleted_by== Yii::$app->user->identity->id){
-            $model->deleted_by=Yii::$app->user->identity->id;
-        }
-        else{
-            $model->deleted_by='both';
-        }
-        $model->save();
+       
+        Message::deleteMessage($model);
+
         if( $model->to_id==Yii::$app->user->identity->id)
         {
             $redirect_id=$model->from_id;
@@ -146,6 +142,18 @@ class MessageController extends Controller
        Yii::$app->session->setFlash('success','Сообщение удалено');
 
         return $this->redirect(['create','id'=>$redirect_id]);
+    }
+    public function actionDelete_dialog($id)
+    {
+        $models=Message::find()->where(['or', ['from_id'=>$id], ['to_id'=>$id]])->all();
+        
+        foreach($models as $model){
+            Message::deleteMessage($model);
+        }
+
+        Dialog::deleteDialog($id);
+        Yii::$app->session->setFlash('success','Диалог удален');
+        return $this->redirect(['index']);
     }
 
     /**

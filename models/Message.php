@@ -56,7 +56,11 @@ class Message extends \yii\db\ActiveRecord
             'date' => 'Date',
             'text' => 'Текст сообщения',
             'viewed' => 'Viewed',
-            'deleted_by' => 'Deleted By',
+            'deleted_by' => 'Deleted By', 
+            //столбец deleted_by принимает значение 0, если сообщение доступно обоим пользователям
+            // значение id пользователя, который нажал "удалить сообщение" и значение both, если собщение удалено
+            //обоими пользователями
+
         ];
     }
 
@@ -78,5 +82,16 @@ class Message extends \yii\db\ActiveRecord
     public function isVisible()
     {
         return  Message::find()->where(['and',['!=','deleted_by', Yii::$app->user->identity->id],['!=','deleted_by', 'both']]);
+    }
+    public function deleteMessage($model){
+        if($model->deleted_by=='0' || $model->deleted_by== Yii::$app->user->identity->id){
+            //условие $model->deleted_by== Yii::$app->user->identity->id сделано для того, чтобы из-за какого-нибудь сбоя 
+            //пользователь не мог 2 раза запустить delete и выставить значение both
+            $model->deleted_by=Yii::$app->user->identity->id;
+        }
+        else{
+            $model->deleted_by='both';
+        }
+        $model->save();
     }
 }

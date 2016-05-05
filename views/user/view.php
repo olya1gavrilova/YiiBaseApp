@@ -20,8 +20,12 @@ $this->title = 'Пользователь '.$model->username;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
-    <h1><?= Html::encode($this->title) ?></h1>
-
+    <h1><?= Html::encode($this->title) ?> 
+        <?php if (Yii::$app->user->identity->id != $id):?>
+            <?=Html::a('Отправить сообщение', Url::to(['message/create', 'id'=>$id]),['class'=>'btn btn-success'])?></h1>
+        <?php else:?>
+            <?=Html::a('Мои сообщения', Url::to(['message/index']),['class'=>'btn btn-success'])?></h1>
+        <?php endif?>
 <?php if(Yii::$app->user->can('role-list') || User::isAuthor($id)) :?>
     <div class='row'> 
       <?php if (User::isAuthor($id) && (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list'))):?>
