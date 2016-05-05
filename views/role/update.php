@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use app\models\RoleChild;
 use yii\widgets\ActiveForm;
 
@@ -19,7 +20,7 @@ $this->params['breadcrumbs'][] = 'Update';
 	<?php foreach ($parents as $parent): ?>
 		<?php foreach ($roles as $role): ?>
 			<?php if($role->name===$parent->parent):?>
-					<a href="update?id=<?=$role->name?>"><?=$role->description?></a><br />
+				<?=Html::a($role->description, Url::to($role->name))?><br />
 			<?php endif?>
 		<?php endforeach?>
 	<?php endforeach?>
@@ -35,16 +36,11 @@ $this->params['breadcrumbs'][] = 'Update';
 		<?php foreach ($roles as $role): ?>
 				
 			<?php if($role->name!=='admin' && $role->name!==$model->name && $model->name!='user'):?>
-
-				<a href="update?id=<?=$role->name?>"> 
-				<?=$role->description?></a>
+				<?=Html::a($role->description, Url::to(['update','id'=>$role->name]))?>
 				<input type="checkbox" value="<?=$role->name?>" name="functions[]" 
 
 				<?php foreach ($children as $child): ?>
-					
-					
 							<?php if($child->child ===$role->name):?>
-								
 								checked
 							<?php endif?>
 					

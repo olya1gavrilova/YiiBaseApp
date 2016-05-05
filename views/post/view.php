@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 use yii\widgets\LinkPager;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -15,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-view">
 
    <h1><?=$model->title?></h1>
-        Автор: <?=Html::a($author,['../user/view/'. $model->author_id])?>
+        Автор: <?=Html::a($author,  Url::to(['user/view', 'id' => $model->author_id]))?>
          <br />
         Дата публикации: <?=$model->publish_date?>
         <br />
@@ -32,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <br />
             Коммент от <b>
             <?php if($comment->auth_id!='0'):?>
-                <a href="/user/view/<?=$comment->auth_id?>"><?=$comment->auth_nick?></a> 
+                <?=Html::a($comment->auth_nick, Url::to(['user/view', 'id' => $model->author_id]))?> 
             <?php else:?>
                 <?=$comment->auth_nick?>
             <?php endif?>
@@ -43,5 +44,5 @@ $this->params['breadcrumbs'][] = $this->title;
             <br />
             <hr />
         <?php endforeach?>
-            <?=Html::a('Добавить комментарий',Yii::$app->user->isGuest ? ['../comments/create/'.$model->id] : ['../comments/create_comm/'.$model->id] ,['class'=>'btn btn-info']);?>
+            <?=Html::a('Добавить комментарий',[Yii::$app->user->isGuest ? Url::to(['comments/create', 'id' => $model->id]) : Url::to(['comments/create_comm', 'id' => $model->id])] ,['class'=>'btn btn-info']);?>
 </div>

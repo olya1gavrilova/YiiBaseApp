@@ -8,6 +8,8 @@ use app\models\User;
 use app\models\Post;
 use yii\helpers\StringHelper;
 
+use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PostSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -22,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
   
-        <?= Html::a('Create Post', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Post', Url::to(['post/create']), ['class' => 'btn btn-success']) ?>
     
     </p>
 
@@ -37,10 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'Anons',
                 'value' => function (Post $data) {
                     if($data->anons!=''){
-                      return Html::a(Html::encode($data->anons), \yii\helpers\Url::to(['post/view', 'id' => $data->id]));
+                      return Html::a(Html::encode($data->anons), Url::to(['post/view', 'id' => $data->id]));
                     }
                     else{
-                        return Html::a(Html::encode(StringHelper::truncateWords($data->content, 25)), \yii\helpers\Url::to(['post/view', 'id' => $data->id]));
+                        return Html::a(Html::encode(StringHelper::truncateWords($data->content, 25)), Url::to(['post/view', 'id' => $data->id]));
                     }
                 },
                 'format' => 'raw',

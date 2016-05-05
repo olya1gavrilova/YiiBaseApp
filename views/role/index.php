@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
@@ -32,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <td>
 
                 
-                <?=Html::a($role->description,['update','id'=>$role->name]);?>
+                <?=Html::a($role->description,Url::to(['update','id'=>$role->name]));?>
                    
                 </a>
             <td>
@@ -42,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php foreach ($users as $user):?>
             <tr>
-                <td><?=Html::a($user->username, ['../user/view','id'=>$user->id])?></a><td>
+                <td><?=Html::a($user->username, Url::to(['user/view','id'=>$user->id]))?></a><td>
               
              <?php foreach ($roles as $role):?>
                     <td>
