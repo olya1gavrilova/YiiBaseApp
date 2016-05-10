@@ -19,29 +19,13 @@ use app\models\User;
 use yii\helpers\StringHelper;
 use yii\base\Security;
 
+
 /**
  * PostController implements the CRUD actions for Post model.
  */
 class PostController extends Controller
 {
-   /* public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }*/
-
-    /**
-     * Lists all Post models.
-     * @return mixed
-     */
-
-    
+   
 
     //вывод всех постов  - для администратора
      public function actionIndex()

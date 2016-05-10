@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\models\Profile;
+use app\models\Featuretype;
 use yii\db\Command;
 /**
  * This is the model class for table "features".
@@ -34,7 +35,7 @@ class Feature extends \yii\db\ActiveRecord
             [['name', 'description'], 'required'],
             [['type'], 'string'],
             [['name', 'description'], 'string', 'max' => 255],
-            [['name'], 'unique']
+            [['name'], 'unique'],
         ];
     }
 
@@ -60,17 +61,28 @@ class Feature extends \yii\db\ActiveRecord
     }
     public function addCol($var)
     {   
+        
         switch ($var->type) {
             case  $var->type=='string': $type='string'; break;
             case  $var->type=='text': $type='text(1000)'; break;
             case  $var->type=='select': $type='integer(11)'; break;
             case  $var->type=='radio': $type='integer(11)'; break;
             //case  $var->type=='date': $type='date'; break;
+
         }
          Yii::$app->db->createCommand()->addColumn('profile' ,$var->name, $type)->execute();
     }
     public function deleteCol($var)
     {
          Yii::$app->db->createCommand()->dropColumn('profile' ,$var->name)->execute();
+         Featuretype::deleteAll(['feature_id'=>$var->id]);
+
+    }
+    public function renameCol($oldvar, $var)
+    {
+        if($oldvar!=$var){
+             return  Yii::$app->db->createCommand()->renameColumn('profile' ,$oldvar,$var)->execute();       
+                }
+        
     }
 }
