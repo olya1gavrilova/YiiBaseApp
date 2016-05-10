@@ -94,4 +94,10 @@ class Message extends \yii\db\ActiveRecord
         }
         $model->save();
     }
+    public function createMessage($model,$author, $reciever){
+       
+         $model->from_id=$author;
+         $model->to_id=$reciever;
+         $model->save();
+    }
 }

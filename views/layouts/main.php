@@ -43,14 +43,14 @@ AppAsset::register($this);
         
     ]);
         $items=[];
-         $items[]=['label' => 'Личный кабинет', 'url' => ['/user/view', 'id'=>Yii::$app->user->identity->id], 'visible' => !Yii::$app->user->isGuest];
+         $items[]=['label' => 'Личный кабинет', 'url' => Url::to(['user/view', 'id'=>Yii::$app->user->identity->id]), 'visible' => !Yii::$app->user->isGuest];
 
          foreach (Menu::find()->where(['type'=>1])->all() as $menu) {
-             $items[]= ['label' => $menu->menu_item, 'url' =>[$menu->menu_url]];
+             $items[]= ['label' => $menu->menu_item, 'url' => Url::to([$menu->menu_url])];
         }
 
-        $items[]=['label' => 'Login', 'url' => ['/site/login'], 'visible' => Yii::$app->user->isGuest];
-        $items[]=['label' => 'Logout', 'url' => ['/site/logout'],'class' => 'btn btn-link', 'visible' => !Yii::$app->user->isGuest];
+        $items[]=['label' => 'Login', 'url' => Url::to(['site/login']), 'visible' => Yii::$app->user->isGuest];
+        $items[]=['label' => 'Logout', 'url' => Url::to(['site/logout']),'class' => 'btn btn-link', 'visible' => !Yii::$app->user->isGuest];
 
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

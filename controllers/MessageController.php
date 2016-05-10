@@ -18,22 +18,7 @@ use yii\web\Session;
  */
 class MessageController extends Controller
 {
-  /*  public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }*/
-
-    /**
-     * Lists all Message models.
-     * @return mixed
-     */
+ 
   /*  public function actionView()
     {
         $dataProvider = new ActiveDataProvider([
@@ -81,19 +66,11 @@ class MessageController extends Controller
        
             if ($model->load(Yii::$app->request->post())) {
                 //два диалога нужно, чтобы при удалении диалога одним пользователем, он был доступен для другого.
-                if(!Dialog::find()->where(['to_id'=>$id, 'from_id'=>$author_id])->one()) {
-                    $dialog=new Dialog;
-                    $dialog->from_id=$author_id;
-                    $dialog->to_id=$id;
-                    $dialog->insert();
-                    $dialog->from_id=$id;
-                    $dialog->to_id=$author_id;
-                    $dialog->insert();
-                }
+                Dialog::createDialog($id,$author_id);
+                Dialog::createDialog($author_id,$id);
 
-                $model->from_id=Yii::$app->user->identity->id;
-                $model->to_id=$id;
-                $model->save();
+                Message::createMessage($model,$author_id,$id);
+
                 return $this->redirect(['create',
                  'id' => $id,
                  'messages'=>$messages,]);

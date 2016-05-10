@@ -76,4 +76,12 @@ class Dialog extends \yii\db\ActiveRecord
             $dialog->delete();
         
     }
+    public function createDialog($id1, $id2){
+      if(!Dialog::find()->where(['to_id'=>$id1, 'from_id'=>$id2])->one()) {
+                    $dialog=new Dialog;
+                    $dialog->from_id=$id2;
+                    $dialog->to_id=$id1;
+                    $dialog->insert();
+                }
+    }
 }

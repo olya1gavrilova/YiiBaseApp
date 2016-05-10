@@ -61,7 +61,7 @@ class RoleController extends Controller
             $assignments=Assignments::find()->all();
 
             //получаем массив значений из формы
-             $post=Yii::$app->request->post('roles');
+             $post=Yii::$app->request->post('features');
            if($post){
             //перезаписываем данные в таблицу
                 foreach($post as $key=>$value){
