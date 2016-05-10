@@ -23,16 +23,24 @@ class ProfileController extends Controller
      */
     public function actionIndex()
     {
-         
-        $dataProvider = new ActiveDataProvider([
-            'query' => Profile::find(),
-        ]);
+        if(Yii::$app->user->can('profile-manager'))
+        {
+            $dataProvider = new ActiveDataProvider([
+                'query' => Profile::find(),
+                'pagination' => [
+                        'pageSize' => 10,
+                    ],
+            ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'features'=> $features
-            
-        ]);
+            return $this->render('index', [
+                'dataProvider' => $dataProvider,
+                'features'=> $features
+                
+            ]);
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав');
+        }
     }
 
     /**
@@ -42,8 +50,10 @@ class ProfileController extends Controller
      */
     public function actionView($id)
     {
+        $features = Feature::find()->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'features'=> $features,'id'=>$id
         ]);
     }
 
@@ -55,23 +65,31 @@ class ProfileController extends Controller
     public function actionCreate()
     {
         $id= Yii::$app->user->identity->id;
-        if(!Profile::findOne(['user_id'=>$id]))
-        {
-            $model = new Profile();
-            $features = Feature::find()->all();
 
-            if ($model->load(Yii::$app->request->post()) ) {
-                 $model->user_id= $id;
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->user_id]);
-            } else {
-                return $this->render('create', [
-                    'model' => $model, 'features'=>$features 
-                ]);
+        if(!Yii::$app->user->isGuest){
+            if(!Profile::findOne(['user_id'=>$id]))
+            {
+                $model = new Profile();
+                $features = Feature::find()->all();
+
+                if ($model->load(Yii::$app->request->post()) ) {
+                     $model->user_id= $id;
+                    $model->save();
+
+                    return $this->redirect(['view', 'id' => $model->user_id]);
+                } else {
+                    return $this->render('create', [
+                        'model' => $model, 'features'=>$features 
+                    ]);
+                }
+            }
+            else{
+                  return $this->redirect(['update', 'id' => $id]);
+                
             }
         }
         else{
-            throw new ForbiddenHttpException("Запись уже существует");
+            throw new ForbiddenHttpException('Для создания профиля вам необходимо зарегистрироваться ');
             
         }
     }
@@ -83,16 +101,26 @@ class ProfileController extends Controller
      * @return mixed
      */
     public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        $features = Feature::find()->all();
+    {       
+        if(Yii::$app->user->can('profile-manager') || Profile::isAuthor($id)){
+            $model = $this->findModel($id);
+            if($model){
+                $features = Feature::find()->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->user_id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model, 'features'=>$features 
-            ]);
+                if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                    return $this->redirect(['view', 'id' => $model->user_id]);
+                } else {
+                    return $this->render('create', [
+                        'model' => $model, 'features'=>$features 
+                    ]);
+                }
+            }
+            else{
+                return $this->redirect(['create', 'id' => $id]);
+            }
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав');
         }
     }
 
@@ -103,10 +131,17 @@ class ProfileController extends Controller
      * @return mixed
      */
     public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+    {
+         if(Yii::$app->user->can('profile-manager'))
+        {
+            $this->findModel($id)->delete();
+
+            return $this->redirect(['index']);
+        }
+        else{
+            throw new ForbiddenHttpException('Недостаточно прав');
+        }
     }
 
     /**

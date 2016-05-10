@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\db\Command;
+use yii\web\ForbiddenHttpException;
 
 /**
  * FeatureController implements the CRUD actions for Feature model.
@@ -21,13 +22,21 @@ class FeatureController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Feature::find(),
-        ]);
+        if(Yii::$app->user->can('feature-redact')){
+            $dataProvider = new ActiveDataProvider([
+                'query' => Feature::find(),
+                'pagination' => [
+                        'pageSize' => 10,
+                    ],
+            ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'dataProvider' => $dataProvider,
+            ]);
+        }
+        else{
+            throw new ForbiddenHttpException('Доступ запрещен');
+        }
     }
 
     /**
@@ -37,9 +46,14 @@ class FeatureController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+         if(Yii::$app->user->can('feature-redact')){
+                return $this->render('view', [
+                    'model' => $this->findModel($id),
+                ]);
+         }
+        else{
+            throw new ForbiddenHttpException('Доступ запрещен');
+        }
     }
 
     /**
@@ -49,17 +63,29 @@ class FeatureController extends Controller
      */
     public function actionCreate()
     {
-        
-        $model = new Feature();
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                
-                Feature::addCol($model);
-                
-                return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+         if(Yii::$app->user->can('feature-redact')){
+
+            $model = new Feature();
+
+             if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                    
+                    Feature::addCol($model);
+                     if($model->type==="string" || $model->type==='text'){
+                        return $this->redirect(['view', 'id' => $model->id]);
+                        }
+                        else{
+                            return $this->redirect(['featuretype/create', 'id' => $model->id]);
+                        }
+                 return $this->redirect(['index']);
+            } 
+            else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
+         }
+        else{
+            throw new ForbiddenHttpException('Доступ запрещен');
         }
     }
 
@@ -71,14 +97,21 @@ class FeatureController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+       if(Yii::$app->user->can('feature-redact')){
+            $model = $this->findModel($id);
+            $oldname=$model->name;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Feature::renameCol($oldname, $model->name);
+                return $this->redirect(['index']);
+            } else {
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }
+        }
+        else{
+            throw new ForbiddenHttpException('Доступ запрещен');
         }
     }
 
@@ -90,11 +123,16 @@ class FeatureController extends Controller
      */
     public function actionDelete($id)
     {
-        $model=$this->findModel($id);
-        Feature::deleteCol($model);
-        $model->delete();
+        if(Yii::$app->user->can('feature-redact')){
+            $model=$this->findModel($id);
+            Feature::deleteCol($model);
+            $model->delete();
 
-        return $this->redirect(['index']);
+            return $this->redirect(['index']);
+        }
+        else{
+            throw new ForbiddenHttpException('Доступ запрещен');
+        }
     }
 
     /**

@@ -22,10 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-view">
     <h1><?= Html::encode($this->title) ?> 
         <?php if (Yii::$app->user->identity->id != $id):?>
-            <?=Html::a('Отправить сообщение', Url::to(['message/create', 'id'=>$id]),['class'=>'btn btn-success'])?></h1>
+            <?=Html::a('Отправить сообщение', Url::to(['message/create', 'id'=>$id]),['class'=>'btn btn-success'])?>
         <?php else:?>
-            <?=Html::a('Мои сообщения', Url::to(['message/index']),['class'=>'btn btn-success'])?></h1>
+            <?=Html::a('Мои сообщения', Url::to(['message/index']),['class'=>'btn btn-success'])?>
         <?php endif?>
+
+         <?=Html::a('Посмотреть профиль', Url::to(['profile/view', 'id'=>$id]),['class'=>'btn btn-info'])?>
+         </h1>
+         
 <?php if(Yii::$app->user->can('role-list') || User::isAuthor($id)) :?>
     <div class='row'> 
       <?php if (User::isAuthor($id) && (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list'))):?>
@@ -73,6 +77,18 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td>Все пользователи</td>
                 <td><?=Html::a('Перейти', Url::to(['user/index']), ['class' => 'btn btn-info'])?></td>
+            </tr>
+            <?php endif?>
+            <?php if (Yii::$app->user->can('profile-manager')):?>
+            <tr>
+                <td>Управление профилями пользователей</td>
+                <td><?=Html::a('Перейти', Url::to(['profile/index']), ['class' => 'btn btn-info'])?></td>
+            </tr>
+            <?php endif?>
+            <?php if (Yii::$app->user->can('feature-redact')):?>
+            <tr>
+                <td>Редактирование свойств профилей</td>
+                <td><?=Html::a('Перейти', Url::to(['feature/index']), ['class' => 'btn btn-info'])?></td>
             </tr>
             <?php endif?>
          </table> 

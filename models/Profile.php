@@ -28,7 +28,7 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        foreach (Feature::find()->all() as $key) {
+        foreach (Profile::getColumns() as $key) {
            $features[]=$key->name;
         }
 
@@ -55,5 +55,13 @@ class Profile extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+    public function isAuthor($id){
+        if(Yii::$app->user->identity->id===$id){
+            return true;
+        }
+    }
+    public function getColumns(){
+        return Profile::getTableSchema()->columns;
     }
 }

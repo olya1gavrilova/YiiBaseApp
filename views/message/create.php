@@ -7,6 +7,7 @@ use yii\helpers\Url;
 
 use app\models\Message;
 use app\models\User;
+use yii\widgets\LinkPager;
 /* @var $this yii\web\View */
 /* @var $model app\models\Message */
 
@@ -50,5 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
 				</div>
 			<? endforeach?>
 		</div>
+		<?= LinkPager::widget(['pagination' => $pagination]) ?>
 
 </div>

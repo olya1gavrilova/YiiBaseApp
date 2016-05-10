@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use app\models\Dialog;
 use yii\web\Session;
+use yii\data\Pagination;
 
 /**
  * MessageController implements the CRUD actions for Message model.
@@ -62,7 +63,12 @@ class MessageController extends Controller
         if(!Yii::$app->user->isGuest){
         $model = new Message();
         $author_id =Yii::$app->user->identity->id;
-        $messages= Message::isVisible()->andWhere(['or',['to_id'=>$id, 'from_id'=>$author_id],['from_id'=>$id, 'to_id'=>$author_id]])->orderBy('id DESC')->all();
+        $messages= Message::isVisible()->andWhere(['or',['to_id'=>$id, 'from_id'=>$author_id],['from_id'=>$id, 'to_id'=>$author_id]])->orderBy('id DESC');
+        $pagination=new Pagination([
+                'defaultPageSize'=>20,
+                'totalCount'=>$messages->count(),
+            ]);
+        $messages= $messages->offset($pagination->offset)->limit($pagination->limit)->all();
        
             if ($model->load(Yii::$app->request->post())) {
                 //два диалога нужно, чтобы при удалении диалога одним пользователем, он был доступен для другого.
@@ -73,12 +79,14 @@ class MessageController extends Controller
 
                 return $this->redirect(['create',
                  'id' => $id,
-                 'messages'=>$messages,]);
+                 'messages'=>$messages,
+                 'pagination'=>$pagination]);
             } else {
                 return $this->render('create', [
                     'model' => $model,
                     'id' => $id,
                     'messages'=>$messages,
+                    'pagination'=>$pagination
                 ]);
             }
         }

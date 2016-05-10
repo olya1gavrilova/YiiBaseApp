@@ -15,6 +15,7 @@ use yii\web\ForbiddenHttpException;
  */
 class PageController extends Controller
 {
+
     /**
      * Lists all Page models.
      * @return mixed
