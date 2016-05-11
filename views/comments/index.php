@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return \yii\helpers\Url::to(['comments/'.$action.'/'.$model->id]);
                 }
             },
-            'visible' =>  Yii::$app->user->can('comment-list') ||  Comments::isAuthor($id) ,
+            'visible' =>  Yii::$app->user->can('comment-list') ||  $user->isAuthor(),
             ],
         ],
     ]); ?>

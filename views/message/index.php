@@ -31,7 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                     <td><?=Html::a($partner->to->username, Url::to(['user/view','id'=>$partner->to_id]))?></td>
                     <td><?=Html::a(StringHelper::truncateWords($partner->lastmessage->text, 20), Url::to(['create','id'=>$partner->to_id]))?></td>
-                    <td><?=Html::a('Удалить диалог', Url::to(['delete_dialog','id'=>$partner->to_id]), ['class'=>'btn btn-success btn-xs'])?></td>
+                    <td><?=Html::a('Удалить диалог', Url::to(['delete_dialog','id'=>$partner->to_id]), [
+                        'class' => 'btn btn-warning btn-xs',
+                        'data' => [
+                            'confirm' => 'Вы уверены, что хотите удалить этот диалог?',
+                            'method' => 'post',
+                        ]])?></td>
                 </tr>
              <?php endforeach?>
         </table>

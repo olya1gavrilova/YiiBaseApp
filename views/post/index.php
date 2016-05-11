@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="post-index">
 
-    <h1>Все <?= Html::encode($this->title) ?> <?=$user?></h1>
+    <h1>Все <?= Html::encode($this->title) ?> <?=$user->username?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -27,7 +27,21 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Post', Url::to(['post/create']), ['class' => 'btn btn-success']) ?>
     
     </p>
-
+    <?php if($id){
+        $visible=['class' => 'yii\grid\ActionColumn',
+            
+                 'visible' =>  Yii::$app->user->can('update-post')  || $user->isAuthor() && !Yii::$app->user->isGuest,
+            
+            ];
+        }
+        else{
+             $visible=['class' => 'yii\grid\ActionColumn',
+            
+                 'visible' =>  Yii::$app->user->can('update-post') && !Yii::$app->user->isGuest,
+            
+            ];
+        }
+        ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         
@@ -53,9 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'publish_status',
             // 'publish_date',
 
-            ['class' => 'yii\grid\ActionColumn',
-            'visible' =>  Yii::$app->user->can('update-post') || User::isAuthor($id) &&  !Yii::$app->user->isGuest,
-            ],
+            $visible,
         ],
     ]); ?>
 

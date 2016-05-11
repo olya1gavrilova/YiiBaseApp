@@ -30,13 +30,14 @@ class PostController extends Controller
     //вывод всех постов  - для администратора
      public function actionIndex()
     {   
-        
+        $id=Yii::$app->request->get('id');
+        $user=User::findOne(['id'=>$id]);
 
-            if(Yii::$app->user->can('confirm-post') ||Post::isAuthor($id) && !Yii::$app->user->isGuest)
+            if(Yii::$app->user->can('confirm-post') && !Yii::$app->user->isGuest)
             {
-                if(Yii::$app->request->get('id')){
+                if($id){
                     $dataProvider=new ActiveDataProvider([
-                        'query' => Post::find()->where(['author_id'=>Yii::$app->request->get('id')]),
+                        'query' => Post::find()->where(['author_id'=>$id]),
                         'pagination' => [
                             'pageSize' => 10,
                         ],
@@ -52,9 +53,9 @@ class PostController extends Controller
                  }
               }
             else{
-                if(Yii::$app->request->get('id')){
+                if($id){
                     $dataProvider=new ActiveDataProvider([
-                        'query' => Post::isPublished()->andWhere(['author_id'=>Yii::$app->request->get('id')]),
+                        'query' => Post::isPublished()->andWhere(['author_id'=>$id]),
                         'pagination' => [
                             'pageSize' => 10,
                         ],
@@ -70,14 +71,14 @@ class PostController extends Controller
                }
             }
         
-            $user=User::findOne([ 'id'=> Yii::$app->request->get('id') ])->username;
+           // $user=User::findOne([ 'id'=> Yii::$app->request->get('id') ])->username;
             
 
             return $this->render('index', [
                 'dataProvider' => $dataProvider, 
                 'category'=>Category::find()->all(),
+                'id'=>$id,
                 'user'=>$user,
-                'id'=>Yii::$app->request->get('id'),
                             
             ]);
        
@@ -89,10 +90,10 @@ class PostController extends Controller
      */
    public function actionView($id)
     {
-        $post= new Post;
+        
         $model=$this->findModel($id);
      
-        if(Yii::$app->user->can('post-draft-view') || $post->isAuthor($id) || $model->publish_status==='publish')
+        if(Yii::$app->user->can('post-draft-view') || $model->isAuthor() || $model->publish_status==='publish')
         {
            
             $pagination=new Pagination([
@@ -147,10 +148,10 @@ class PostController extends Controller
                
                 $model = new Post();
                 $model->author_id = $user->id;
-                if ($model->load(Yii::$app->request->post()))
+                if ($model->load(Yii::$app->request->post()) && $model->save())
                 {
                     //$model->anons=StringHelper::truncateWords(strip_tags($model->content, 50));
-                    $model->save();
+                    
                     return $this->redirect(['view', 'id' => $model->id, 'category' => $category ]);
                 } 
                 else {
@@ -173,9 +174,9 @@ class PostController extends Controller
     public function actionUpdate($id)
 
     {
-        $post=new Post;
+        $model = $this->findModel($id);
         
-        if(Yii::$app->user->can('update-post') || $post->isAuthor($id))
+        if(Yii::$app->user->can('update-post') || $model->isAuthor())
         {
             $model = $this->findModel($id);
 
@@ -203,12 +204,12 @@ class PostController extends Controller
     public function actionDelete($id)
 
     {
-        $post=new Post;
+        $post=$this->findModel($id);
 
 
-        if(Yii::$app->user->can('delete-post') || $post->isAuthor($id) )
+        if(Yii::$app->user->can('delete-post') || $post->isAuthor() )
         {
-            $this->findModel($id)->delete();
+            $post->delete();
 
             return $this->redirect(['index']);
         }

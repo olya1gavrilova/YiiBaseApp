@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = 'Редактировать';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-     <?php if(User::isAuthor($id)):?>
+     <?php if($model->isAuthor()):?>
 
              <?= Html::a('Изменить пароль', Url::to(['user/change_password']), ['class' => 'btn btn-info']) ?>
 

@@ -30,9 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
          <?=Html::a('Посмотреть профиль', Url::to(['profile/view', 'id'=>$id]),['class'=>'btn btn-info'])?>
          </h1>
          
-<?php if(Yii::$app->user->can('role-list') || User::isAuthor($id)) :?>
+<?php if(Yii::$app->user->can('role-list') || $model->isAuthor()) :?>
     <div class='row'> 
-      <?php if (User::isAuthor($id) && (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list'))):?>
+      <?php if ($model->isAuthor() && (Yii::$app->user->can('role-list') || Yii::$app->user->can('menu-access') || Yii::$app->user->can('update-post') || Yii::$app->user->can('comment-list'))):?>
         <div class='col-md-6'>
         <h2>Функции</h2>
         <table class='table table-bordered'>

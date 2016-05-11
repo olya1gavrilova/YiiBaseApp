@@ -151,8 +151,8 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
         return $this->password === md5($password);
     }
 
-    public function isAuthor($id){
-           return $id===Yii::$app->user->id ? true: false;
+    public function isAuthor(){
+           return $this->id==Yii::$app->user->id ? true: false;
     }
 
     public function tokenGenerator(){

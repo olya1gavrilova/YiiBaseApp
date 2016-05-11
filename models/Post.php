@@ -79,8 +79,11 @@ class Post extends \yii\db\ActiveRecord
     }
 
     
-    public function isAuthor($id){
-           return Post::find()->where(['id'=>$id])->one()->author_id===Yii::$app->user->id ? true: false;
+    /*public function isAuthor($id){
+           return Post::find()->where(['id'=>$id])->one()->author_id===Yii::$app->user->id ;
+    }*/
+    public function isAuthor(){
+           return $this->author_id==Yii::$app->user->id ;
     }
 
     //время публикации в сутках

@@ -87,9 +87,9 @@ class Comments extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Post::className(), ['id' => 'post_id']);
     }
-     public function isAuthor($id){
-           return $id==Yii::$app->user->id ? true: false;
-    }
+    /* public function isAuthor(){
+           return $this->auth_id===Yii::$app->user->id ? true: false;
+    }*/
 
      public function isPublished($limit, $id){
 

@@ -52,16 +52,16 @@ class UserController extends Controller
     //просмотр своей записи
       public function actionView($id)
     {
-        $user= new User;
+        
 
                 $model = $this->findModel($id);
-         if(Yii::$app->user->can('update-post') ||Post::isAuthor($id) && !Yii::$app->user->isGuest){
+         if(Yii::$app->user->can('update-post')  && !Yii::$app->user->isGuest){
                 $posts=Post::find()->where(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
             }
           else{
                 $posts=Post::isPublished()->andWhere(['author_id'=>$id])->OrderBy('publish_date DESC')->limit(3)->all();
             }
-        if(Yii::$app->user->can('comment-update') ||Comments::isAuthor($id) && !Yii::$app->user->isGuest)
+        if(Yii::$app->user->can('comment-update') && !Yii::$app->user->isGuest)
                 $comments=Comments::find()->where(['auth_id'=>$id])->OrderBy('date DESC')->limit(3)->all();
             else{
                 $comments=Comments::find()->where(['auth_id'=>$id, 'status'=>'publish'])->OrderBy('date DESC')->limit(3)->all();
@@ -160,9 +160,9 @@ class UserController extends Controller
     //РЕДАКТИРОВАТЬ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
     public function actionUpdate($id)
     {
-        $user = new User();
+        $model = $this->findModel($id);
 
-        if(Yii::$app->user->can('user-update') || $user->isAuthor($id)){
+        if(Yii::$app->user->can('user-update') || $model->isAuthor($id)){
             $model = $this->findModel($id);
             $model->scenario=User::SCENARIO_UPDATE;
 
@@ -193,10 +193,10 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $user= new User; 
+        $user=  $this->findModel($id); 
 
-         if(Yii::$app->user->can('user-delete') || $user->isAuthor($id)){
-                 $this->findModel($id)->delete();
+         if(Yii::$app->user->can('user-delete') || $user->isAuthor()){
+                 $user->delete();
 
                 return $this->redirect(['index']);
         }

@@ -102,8 +102,9 @@ class ProfileController extends Controller
      */
     public function actionUpdate($id)
     {       
-        if(Yii::$app->user->can('profile-manager') || Profile::isAuthor($id)){
-            $model = $this->findModel($id);
+        $model = $this->findModel($id);
+        if(Yii::$app->user->can('profile-manager') || $model->isAuthor()){
+            
             if($model){
                 $features = Feature::find()->all();
 

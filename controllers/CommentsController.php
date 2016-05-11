@@ -12,6 +12,7 @@ use yii\web\ForbiddenHttpException;
 
 use yii\data\Pagination;
 use app\models\Post;
+use app\models\User;
 use yii\helpers\StringHelper;
 use yii\base\Security;
 
@@ -56,6 +57,7 @@ class CommentsController extends Controller
      */
     public function actionView($id)
     {
+        $user=User::findOne(['id'=>$id]);
              $dataProvider = new ActiveDataProvider([
                     'query' => Comments::find()->where(['auth_id'=>$id])->orderBy('date DESC'),
                     'pagination'=>array(
@@ -66,6 +68,7 @@ class CommentsController extends Controller
                 return $this->render('index', [
                     'dataProvider' => $dataProvider,
                     'id'=>$id,
+                    'user'=>$user
                 ]);
     }
 
@@ -139,7 +142,7 @@ class CommentsController extends Controller
         $model = $this->findModel($id);
         $model->scenario = Comments::SCENARIO_UPDATE;
 
-        if(Yii::$app->user->can('comment-update')  || Comments::isAuthor($model->auth_id) && Comments::isPublished(3 , $id)){
+        if(Yii::$app->user->can('comment-update')  || $model->isAuthor() && Comments::isPublished(3 , $id)){
        
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {

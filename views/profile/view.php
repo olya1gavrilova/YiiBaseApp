@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?php if(Profile::isAuthor($id)):?>
+        <?php if($model->isAuthor()):?>
         <?= Html::a('Редактировать профиль', ['update', 'id' => $model->user_id], ['class' => 'btn btn-primary']) ?>
          <?php endif?>
         <?/*= Html::a('Delete', ['delete', 'id' => $model->user_id], [
