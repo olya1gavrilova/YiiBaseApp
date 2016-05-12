@@ -21,6 +21,7 @@ if(Yii::$app->user->can('profile-manager'))
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="profile-create">
+  <?//php print_r( $model->attributes)?>
 
    <?php $form = ActiveForm::begin(); ?>
 
@@ -44,7 +45,9 @@ $this->params['breadcrumbs'][] = $this->title;
   		<?php elseif($feature->type=="select"):?>
    			 <?= $form->field($model, $feature->name)->dropDownList(ArrayHelper::map(Featuretype::find()->where(['feature_id'=>$feature->id])->all(), 'id', 'value'))->label($feature->description) ?>
      	<?php elseif($feature->type=="radio"):?>
-    	<?php echo $form->field($model, $feature->name)->radioList(ArrayHelper::map(Featuretype::find()->where(['feature_id'=>$feature->id])->all(), 'id', 'value'))->label($feature->description);?>
+    	<?= $form->field($model, $feature->name)->radioList(ArrayHelper::map(Featuretype::find()->where(['feature_id'=>$feature->id])->all(), 'id', 'value'))->label($feature->description);?>
+      <?php elseif($feature->type=="checkbox"):?>
+        <?= $form->field($model, $feature->name)->checkboxList(ArrayHelper::map(Featuretype::find()->where(['feature_id'=>$feature->id])->all(), 'id', 'value'))->label($feature->description) ?>
     	<?php endif?>
 
 	<?php endforeach?>

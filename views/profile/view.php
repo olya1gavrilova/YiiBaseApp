@@ -35,16 +35,23 @@ $this->params['breadcrumbs'][] = $this->title;
     <table class="table table-hover">
         
     <?php foreach($features as $feature):?>
-        <?//php foreach($columns as $column):?>
+       
         <tr>
             <td><?=$feature->description?></td>
             <?php if($feature->type=='select' || $feature->type=='radio'):?>
-             <td><?=Featuretype::findOne(['id'=>$model[$feature->name]])->value?></td>
+                 <td><?=Featuretype::findOne(['id'=>$model[$feature->name]])->value?></td>
+            <?php elseif($feature->type=='checkbox' ):?>
+                <td>
+                     <?php foreach(Featuretype::findAll(['id'=>$model[$feature->name]]) as $featuretype):?>
+                        <?=$featuretype->value?><br/>
+
+                    <?php endforeach?>
+                </td>
             <?php else:?>
-            <td><?=$model[$feature->name]?></td>
+                 <td><?=$model[$feature->name]?></td>
             <?php endif?>
          </tr>
-        <?//php endforeach?>
+       
      <?php endforeach?>
     
     </table>

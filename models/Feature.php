@@ -67,6 +67,8 @@ class Feature extends \yii\db\ActiveRecord
             case  $var->type=='text': $type='text(1000)'; break;
             case  $var->type=='select': $type='integer(11)'; break;
             case  $var->type=='radio': $type='integer(11)'; break;
+            case  $var->type=='checkbox': $type='string'; break;
+            case  $var->type=='multiple': $type='string'; break; // multiselect
             //case  $var->type=='date': $type='date'; break;
 
         }
@@ -83,6 +85,9 @@ class Feature extends \yii\db\ActiveRecord
         if($oldvar!=$var){
              return  Yii::$app->db->createCommand()->renameColumn('profile' ,$oldvar,$var)->execute();       
                 }
+        else{
+            return false;
+        }
         
     }
 }

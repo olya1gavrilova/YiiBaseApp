@@ -51,8 +51,10 @@ class ProfileController extends Controller
     public function actionView($id)
     {
         $features = Feature::find()->all();
+        $model=$this->findModel($id);
+        $model->getCheckbox();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
             'features'=> $features,'id'=>$id
         ]);
     }
@@ -74,17 +76,20 @@ class ProfileController extends Controller
 
                 if ($model->load(Yii::$app->request->post()) ) {
                      $model->user_id= $id;
+                    
+                     
                     $model->save();
 
-                    return $this->redirect(['view', 'id' => $model->user_id]);
-                } else {
+                    return $this->redirect(['view', 'id' => $model->user_id, ]);
+                } 
+                else {
                     return $this->render('create', [
-                        'model' => $model, 'features'=>$features 
+                        'model' => $model, 'features'=>$features, 
                     ]);
                 }
             }
             else{
-                  return $this->redirect(['update', 'id' => $id]);
+                  return $this->redirect(['create', 'id' => $id]);
                 
             }
         }
@@ -103,21 +108,31 @@ class ProfileController extends Controller
     public function actionUpdate($id)
     {       
         $model = $this->findModel($id);
+
+        $model->getCheckbox();
+        
         if(Yii::$app->user->can('profile-manager') || $model->isAuthor()){
             
             if($model){
                 $features = Feature::find()->all();
+               $post=Yii::$app->request->post();
+               
+               if ($model->load(Yii::$app->request->post())) {
+                     $model->setCheckbox();
 
-                if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                 
+                    $model->save();
+                    Yii::$app->session->setFlash('success', 'данные успешно изменены');
                     return $this->redirect(['view', 'id' => $model->user_id]);
-                } else {
+
+                }  else {
                     return $this->render('create', [
-                        'model' => $model, 'features'=>$features 
+                        'model' => $model, 'features'=>$features, 
                     ]);
                 }
             }
             else{
-                return $this->redirect(['create', 'id' => $id]);
+                return $this->redirect(['create', 'id' => $id, ]);
             }
         }
         else{

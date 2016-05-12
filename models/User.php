@@ -178,5 +178,23 @@ class User extends ActiveRecord implements IdentityInterface, Linkable
  
       return $fields;
   }
+  public function createuser()
+   {
+        $token=$this->tokenGenerator();
+       $this->access_token= $token;
+            $this->password=md5($this->password);
+            //$model->validate();
+            $this->save();
+
+            $id=User::findIdentityByAccessToken($token)->id;
+            $assignments= new Assignments();
+            $assignments->user_id=$id;
+            $assignments->item_name='user';
+            $assignments->save();
+
+            $profile=new Profile;
+            $profile->user_id= $id;
+            $profile->insert();
+  }
   
 }

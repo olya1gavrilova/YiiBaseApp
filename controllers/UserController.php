@@ -16,6 +16,7 @@ use yii\filters\VerbFilter;
 use app\models\Assignments;
 use yii\base\Security;
 use app\models\Role;
+use app\models\Profile;
 
 
 
@@ -118,9 +119,8 @@ class UserController extends Controller
             return $this->goHome();
         }
 
-        $model = new User(['scenario' => Comments::SCENARIO_CREATE]);
+        $model = new User(['scenario' => User::SCENARIO_CREATE]);
         
-        $assignments= new Assignments();
         
         if ($model->load(Yii::$app->request->post())) {
 
@@ -131,15 +131,7 @@ class UserController extends Controller
                   ]); 
             }
             else{
-            $model->access_token=$model->tokenGenerator();
-            $model->password=md5($model->password);
-            //$model->validate();
-            $model->save();
-
-            $id=User::findIdentityByAccessToken($model->access_token)->id;
-            $assignments->user_id=$id;
-            $assignments->item_name='user';
-            $assignments->save();
+            $model->createuser();
 
             Yii::$app->session->setFlash('success','Вы зарегистрированы на сайте. Введите свой логин и пароль для входа');
             return $this->redirect(['../site/login']);

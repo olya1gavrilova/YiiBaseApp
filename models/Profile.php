@@ -35,7 +35,7 @@ class Profile extends \yii\db\ActiveRecord
         return [
           //  [['user_id'], 'required'],
            // [['user_id'], 'integer'],
-            [$features, 'safe']
+            [$features, 'safe'],
         ];
     }
 
@@ -61,5 +61,27 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getColumns(){
         return Profile::getTableSchema()->columns;
+    }
+    public function setCheckbox(){
+        foreach ($this->attributes as $key => $value) {
+                        if(Feature::findOne(['name'=>$key])->type == 'checkbox' && $value!=''){
+                            foreach ($this->$key as $key1 => $value1) {
+                            $nails[]= '^'.$value1.'$';
+                        }
+                        $this->$key=implode('\n', $nails);
+                        }
+                     }
+    }
+    public function getCheckbox(){
+        foreach ($this->attributes as $key => $value) {
+                        if(Feature::findOne(['name'=>$key])->type == 'checkbox' && $value!=''){
+                           $items=explode('\n', $value);
+                        
+                            foreach ($items as $item) {
+                                $items2[]=str_replace(['^','$'],'', $item);
+                            }
+                            $this->$key=$items2;
+                        }
+                     }
     }
 }
