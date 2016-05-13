@@ -142,7 +142,7 @@ class CommentsController extends Controller
         $model = $this->findModel($id);
         $model->scenario = Comments::SCENARIO_UPDATE;
 
-        if(Yii::$app->user->can('comment-update')  || $model->isAuthor() && Comments::isPublished(3 , $id)){
+        if(Yii::$app->user->can('comment-update')  || $model->isAuthor() && Comments::isPublished(3) , $id)){
        
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {

@@ -95,7 +95,7 @@ class Comments extends \yii\db\ActiveRecord
 
     $start_publish=time()-($limit*60*60*24);
 
-     $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
+    $time=Yii::$app->formatter->asDatetime($start_publish, 'php:Y-m-d H:i:s');
 
       if (Comments::findOne(['id'=>$id])->date > $time){
         return true;

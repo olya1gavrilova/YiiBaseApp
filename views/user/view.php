@@ -23,8 +23,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?> 
         <?php if (Yii::$app->user->identity->id != $id):?>
             <?=Html::a('Отправить сообщение', Url::to(['message/create', 'id'=>$id]),['class'=>'btn btn-success'])?>
+
         <?php else:?>
             <?=Html::a('Мои сообщения', Url::to(['message/index']),['class'=>'btn btn-success'])?>
+            <?=Html::a('Моя метка', Url::to(['mark/view']),['class'=>'btn btn-primary'])?>
         <?php endif?>
 
          <?=Html::a('Посмотреть профиль', Url::to(['profile/view', 'id'=>$id]),['class'=>'btn btn-info'])?>
