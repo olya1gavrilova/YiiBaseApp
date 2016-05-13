@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <td><?=$feature->description?></td>
             <?php if($feature->type=='select' || $feature->type=='radio'):?>
                  <td><?=Featuretype::findOne(['id'=>$model[$feature->name]])->value?></td>
-            <?php elseif($feature->type=='checkbox' ):?>
+            <?php elseif($feature->type=='checkbox' || $feature->type=='multiple'):?>
                 <td>
                      <?php foreach(Featuretype::findAll(['id'=>$model[$feature->name]]) as $featuretype):?>
                         <?=$featuretype->value?><br/>

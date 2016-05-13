@@ -69,7 +69,7 @@ class FeatureController extends Controller
 
              if ($model->load(Yii::$app->request->post()) && $model->save()) {
                     
-                    Feature::addCol($model);
+                    $model->addCol();
                      if($model->type==="string" || $model->type==='text'){
                         return $this->redirect(['view', 'id' => $model->id]);
                         }
@@ -102,7 +102,7 @@ class FeatureController extends Controller
             $oldname=$model->name;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                Feature::renameCol($oldname, $model->name);
+                $model->renameCol($oldname);
                 return $this->redirect(['index']);
             } else {
                 return $this->render('update', [
@@ -125,7 +125,7 @@ class FeatureController extends Controller
     {
         if(Yii::$app->user->can('feature-redact')){
             $model=$this->findModel($id);
-            Feature::deleteCol($model);
+            $model->deleteCol();
             $model->delete();
 
             return $this->redirect(['index']);

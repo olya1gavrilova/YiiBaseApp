@@ -64,17 +64,22 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function setCheckbox(){
         foreach ($this->attributes as $key => $value) {
-                        if(Feature::findOne(['name'=>$key])->type == 'checkbox' && $value!=''){
-                            foreach ($this->$key as $key1 => $value1) {
-                            $nails[]= '^'.$value1.'$';
+
+                        $item=Feature::findOne(['name'=>$key]);
+                        if(($item->type == 'checkbox' || $item->type == 'multiple') && $value!=''){
+                           
+                                foreach ($this->$key as $key1 => $value1) {
+                                     $nails[]= '^'.$value1.'$';
+                                 }
+                         $this->$key=implode('\n', $nails);
                         }
-                        $this->$key=implode('\n', $nails);
-                        }
+                        $nails=[];
                      }
     }
     public function getCheckbox(){
         foreach ($this->attributes as $key => $value) {
-                        if(Feature::findOne(['name'=>$key])->type == 'checkbox' && $value!=''){
+                 $item=Feature::findOne(['name'=>$key]);
+                        if($item->type == 'checkbox' || $item->type == 'multiple' && $value!=''){
                            $items=explode('\n', $value);
                         
                             foreach ($items as $item) {
@@ -82,6 +87,7 @@ class Profile extends \yii\db\ActiveRecord
                             }
                             $this->$key=$items2;
                         }
-                     }
+                $items2=[];
+        }
     }
 }

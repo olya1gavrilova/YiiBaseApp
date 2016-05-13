@@ -59,31 +59,30 @@ class Feature extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Profile::className(), ['feature_id' => 'id']);
     }
-    public function addCol($var)
+    public function addCol()
     {   
         
-        switch ($var->type) {
-            case  $var->type=='string': $type='string'; break;
-            case  $var->type=='text': $type='text(1000)'; break;
-            case  $var->type=='select': $type='integer(11)'; break;
-            case  $var->type=='radio': $type='integer(11)'; break;
-            case  $var->type=='checkbox': $type='string'; break;
-            case  $var->type=='multiple': $type='string'; break; // multiselect
-            //case  $var->type=='date': $type='date'; break;
-
+        switch ($this->type) {
+            case  $this->type=='string': $type='string'; break;
+            case  $this->type=='text': $type='text(1000)'; break;
+            case  $this->type=='select': $type='integer(11)'; break;
+            case  $this->type=='radio': $type='integer(11)'; break;
+            case  $this->type=='checkbox': $type='string'; break;
+            case  $this->type=='multiple': $type='string'; break;
+           
         }
-         Yii::$app->db->createCommand()->addColumn('profile' ,$var->name, $type)->execute();
+         Yii::$app->db->createCommand()->addColumn('profile' ,$this->name, $type)->execute();
     }
-    public function deleteCol($var)
+    public function deleteCol()
     {
-         Yii::$app->db->createCommand()->dropColumn('profile' ,$var->name)->execute();
-         Featuretype::deleteAll(['feature_id'=>$var->id]);
+         Yii::$app->db->createCommand()->dropColumn('profile' ,$this->name)->execute();
+         Featuretype::deleteAll(['feature_id'=>$this->id]);
 
     }
-    public function renameCol($oldvar, $var)
+    public function renameCol($oldvar)
     {
-        if($oldvar!=$var){
-             return  Yii::$app->db->createCommand()->renameColumn('profile' ,$oldvar,$var)->execute();       
+        if($oldvar!=$this->name){
+             return  Yii::$app->db->createCommand()->renameColumn('profile' ,$oldvar,$this->name)->execute();       
                 }
         else{
             return false;
