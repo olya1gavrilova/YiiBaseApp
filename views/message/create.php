@@ -43,6 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
 					<?php endif?>
 					30px;"
 					>
+				<?php if($message->viewed=='0'):?>
+					<div><b>Сообщение не прочитано</b></div>
+				<?php endif?>
 					<?=$message->date?>	<br />
 					<b><?=$message->from->username?> </b> написал(а):<br /><br />
 					<?=$message->text?>

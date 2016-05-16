@@ -60,6 +60,7 @@ class MessageController extends Controller
      */
     public function actionCreate($id)
     {
+
         if(!Yii::$app->user->isGuest){
         $model = new Message();
         $author_id =Yii::$app->user->identity->id;
@@ -68,7 +69,14 @@ class MessageController extends Controller
                 'defaultPageSize'=>20,
                 'totalCount'=>$messages->count(),
             ]);
+
+       foreach (Message::isVisible()->where(['to_id'=>$author_id,'viewed'=>'0'])->all() as  $value) {
+            $value->viewed='1';
+             $value->save();
+        }
+
         $messages= $messages->offset($pagination->offset)->limit($pagination->limit)->all();
+
        
             if ($model->load(Yii::$app->request->post())) {
                 //два диалога нужно, чтобы при удалении диалога одним пользователем, он был доступен для другого.
