@@ -75,4 +75,6 @@ class Mark extends \yii\db\ActiveRecord
         $this->get_date=date('Y-m-d H:i:s');
         $this->save();
     }
+   
 }
+

@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\ForbiddenHttpException;
+use yii\helpers\Json;
 
 /**
  * MarkController implements the CRUD actions for Mark model.
@@ -46,17 +47,26 @@ class MarkController extends Controller
      */
     public function actionView()
     {
+        
         if(!Yii::$app->user->isGuest){
             $id=Yii::$app->user->identity->id;
+
+            $marks=Mark::findMarks()->asArray()->all();
+
             $dataProvider = new ActiveDataProvider([
                 'query' => Mark::findMarks(),
                 'pagination' => [
                         'pageSize' => 10,
                     ],
             ]);
+            
+            
             return $this->render('view', [
                 'model' => $this->findModel($id),
                 'dataProvider'=>$dataProvider,
+                
+                
+                
             ]);
         }
         else{
@@ -169,4 +179,38 @@ class MarkController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }*/
     }
+   /*public function beforeAction($action) {
+    $this->enableCsrfValidation = false;
+    return parent::beforeAction($action);
+    }*/
+
+    public function actionMarkupdate(){
+        $id= Yii::$app->user->identity->id;
+        $model = Mark::findOne(['user_id'=>$id]);
+        
+       if(Yii::$app->request->post('long') && Yii::$app->request->post('lat')){
+            
+            $model->long=Json::decode(Yii::$app->request->post('long'));
+            $model->lat=Json::decode(Yii::$app->request->post('lat'));
+            $model->save();
+            echo Json::encode($model);
+        }
+        if(Yii::$app->request->post('leftlong') && Yii::$app->request->post('leftlat'))
+         {
+            $leftlat=Json::decode(Yii::$app->request->post('leftlat'));
+            $leftlong= Json::decode(Yii::$app->request->post('leftlong'));
+            $rightlat=Json::decode(Yii::$app->request->post('rightlat'));
+            $rightlong=Json::decode(Yii::$app->request->post('rightlong'));
+
+        $marks=Mark::findMarks()
+                ->andwhere(['>','lat',$leftlat])
+                ->andwhere(['<','lat',$rightlat])
+                ->andwhere(['>','long',$leftlong])
+                ->andwhere(['<','long',$rightlong])
+                ->asArray()->all();
+          echo Json::encode($marks);
+       }
+    }
+
+
 }
