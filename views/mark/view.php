@@ -75,10 +75,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             url: '<?php echo Yii::$app->request->baseUrl. '/mark/markupdate' ?>',
                                           success: function(marks){
                                             
+                                            //если ещё нет меток, то у области меток нет краев
                                             if(!myMap.geoObjects.getBounds()){
+                                                //просто перебираем все метки 
                                               $(marks).each(function(){
                                                   coord=[this.lat, this.long];
-                                                        
+                                                        //и расставлем их на карту
                                                           myMap.geoObjects.add(new ymaps.Placemark(coord, {
                                                             balloonContent: this.status_text, 
 
@@ -88,17 +90,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                              });
                                               }
                                             else{
+                                                //для каждой координаты метки из базы проверяем
                                                     $(marks).each(function(){
                                                         coord=[this.lat, this.long];
                                                          text=  this.status_text;
+                                                         //перебираем все отисованные объекты на карте
                                                         myMap.geoObjects.each(function (geoObject) { 
 
                                                             abc= geoObject.geometry.getCoordinates();
-                                                          
+                                                          //если есть метка с такими координатами
                                                             if(abc[0]==coord[0] && abc[0]==coord[0]){
-                                                               
+                                                               //прерываем перебор
                                                                     return false;
                                                                 }
+                                                                //если перебор не прервался, выставляется метка
                                                                 myMap.geoObjects.add(new ymaps.Placemark(coord, {
                                                                         balloonContent:  text, 
                                                                     }));
@@ -126,16 +131,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 .add('mapTools') //набор кнопок
                 .add(new ymaps.control.ScaleLine()) //линейка масштаба
 
+                //управление метками в зависимости от поведения
                 myMap.events.add('boundschange', function (event) {
                     if (event.get('newZoom') != event.get('oldZoom') || event.get('newCenter') != event.get('oldCenter')) {
                         getmarks();
                     }
 
                 });
+
+                //расставляем метки после загрузки карты
                 
                 getmarks();
                
-                
+                //выставление метки по клику
                 myMap.events.add('click', function (e) {
                     if (!myMap.balloon.isOpen()) {
                         var coords = e.get('coordPosition');
