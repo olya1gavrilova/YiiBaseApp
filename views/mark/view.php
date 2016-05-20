@@ -145,14 +145,13 @@ $this->params['breadcrumbs'][] = $this->title;
                   });
                
             }
+        
+
             
 
 
          $('#createmark').click(function(event){
-
-
-                   var theend=false;
-
+            var marknew=false;
 
 
                    $('#labelmark').show();
@@ -162,7 +161,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     });
                    
                    myMap.events.add('click', function (e) {
-                        if(theend===false){
+
+                    if(marknew==false){;   
                         //удаляем все объекты
                          myMap.geoObjects.each(function(context) {
                            myMap.geoObjects.remove(context);
@@ -210,17 +210,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                                myMap.geoObjects.remove(context);
                                             });  
                                              $('#labelmark').hide();    
-                                              getmarks();
+                                            marknew=true;
+                                            getmarks();
                                          },
                                   });
                            
-                            theend=true;
+                            
 
                          });}
 
 
                   }); 
             }); 
+
 
    </script>
     
