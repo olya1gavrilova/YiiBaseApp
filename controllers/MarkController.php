@@ -79,7 +79,7 @@ class MarkController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+   /* public function actionCreate()
     {
         if(!Yii::$app->user->isGuest){
             $model = new Mark();
@@ -100,7 +100,7 @@ class MarkController extends Controller
         else{
             throw new ForbiddenHttpException('Для выставления метки зарегистрируйтесь на сайте');
         }
-    }
+    }*/
 
     /**
      * Updates an existing Mark model.
@@ -108,7 +108,7 @@ class MarkController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+   /* public function actionUpdate($id)
     {
         if(!Yii::$app->user->isGuest){
             $model = $this->findModel($id);
@@ -124,7 +124,7 @@ class MarkController extends Controller
         else{
             throw new ForbiddenHttpException('Для выставления метки зарегистрируйтесь на сайте');
         }
-    }
+    }*/
 
     /**
      * Deletes an existing Mark model.
@@ -187,12 +187,24 @@ class MarkController extends Controller
     public function actionMarkupdate(){
         $id= Yii::$app->user->identity->id;
         $model = Mark::findOne(['user_id'=>$id]);
-        
+       
+
        if(Yii::$app->request->post('long') && Yii::$app->request->post('lat')){
-            
-            $model->long=Json::decode(Yii::$app->request->post('long'));
-            $model->lat=Json::decode(Yii::$app->request->post('lat'));
-            $model->save();
+            if(!$model){
+                $model=new Mark;
+                $model->user_id=$id;
+                $model->long=Yii::$app->request->post('long');
+                $model->lat=Yii::$app->request->post('lat');
+                $model->status_text=Yii::$app->request->post('marktext');
+                $model->insert();
+             }
+             else{
+                $model->long=Yii::$app->request->post('long');
+                $model->lat=Yii::$app->request->post('lat');
+                $model->status_text=Yii::$app->request->post('marktext');
+                $model->save();
+            }
+
             echo Json::encode($model);
         }
         if(Yii::$app->request->post('leftlong') && Yii::$app->request->post('leftlat'))

@@ -1,38 +1,32 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
 use yii\web\UrlManager;
-
-
 /* @var $this yii\web\View */
 /* @var $model app\models\Mark */
-
 $this->title = $model->user->username;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="mark-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    
+    <?php if($model):?>
+      <?=$model->status_text;?>
+    <?php endif?>  
 
    
     <p>
         <?php if(!$model):?>
-            <?= Html::a('Create Mark', ['create'], ['class' => 'btn btn-success btn-lg']) ?>
+             <?= Html::submitButton('Поставить метку',['class' => 'btn btn-success btn-lg', 'id' => 'createmark']) ?>
         <?php else:?>
-            <?=$model->status_text?>
-    
             <?=  $model->activeMark() ?
-             Html::a('Метка активна', 'view', ['class' => 'btn btn-success btn-lg'] ) : 
-             Html::a('Активировать', ['activate', 'id' => $model->user_id], ['class' => 'btn btn-default btn-lg']) ?>
-            <?= Html::a('Обновить', ['update', 'id' => $model->user_id], ['class' => 'btn btn-primary btn-xs col-sm-offset-2']) ?>
+             Html::submitButton('Изменить', ['class' => 'btn btn-success btn-lg', 'id' => 'createmark'] ) : 
+             Html::a('Активировать', ['activate', 'id' => $model->user_id], ['class' => 'btn btn-default btn-lg', 'id' => 'createmark']) ?>
             <?= Html::a('Удалить', ['delete', 'id' => $model->user_id], [
-                'class' => 'btn btn-danger btn-xs',
+                'class' => 'btn btn-danger btn-xs col-sm-offset-2',
                 'data' => [
                     'confirm' => 'Are you sure you want to delete this item?',
                     'method' => 'post',
@@ -40,6 +34,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
         
          <?php endif?>
+           <div id='labelmark'  style='display: none; width:80%'> Напишите текст статуcа:<br />
+            <input type="text" required  maxlength="255" id='createtext' >
+            <?= Html::submitButton('Сохранить',['class' => 'btn btn-success btn-xs', 'id' => 'okmark', ]) ?><br />
+            Отметьте кликом своё местоположение: <br />
+            </div>
+        
     </p>
 
    
@@ -53,14 +53,13 @@ $this->params['breadcrumbs'][] = $this->title;
   <script type="text/javascript">   
              ymaps.ready(init);
             var myMap;
-
+          
             function getmarks(){
                 var cornercoord=myMap.getBounds();
                          var leftlat=cornercoord[0][0];
                          var leftlong=cornercoord[0][1];
                          var rightlat=cornercoord[1][0];
                          var rightlong=cornercoord[1][1];
-
                          
                          $.ajax({
                                             type: "POST",
@@ -83,7 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         //и расставлем их на карту
                                                           myMap.geoObjects.add(new ymaps.Placemark(coord, {
                                                             balloonContent: this.status_text, 
-
                                                         }));                                                   
                                                      
                                                   
@@ -96,7 +94,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                                          text=  this.status_text;
                                                          //перебираем все отисованные объекты на карте
                                                         myMap.geoObjects.each(function (geoObject) { 
-
                                                             abc= geoObject.geometry.getCoordinates();
                                                           //если есть метка с такими координатами
                                                             if(abc[0]==coord[0] && abc[0]==coord[0]){
@@ -109,13 +106,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                     }));
                                                         });
                                                         });
-
                                                   }
-
                                          },
                                });
                 }
-
                                                 /**/
             function init () {
                 myMap = new ymaps.Map("map", {
@@ -124,80 +118,113 @@ $this->params['breadcrumbs'][] = $this->title;
                 }, {
                     balloonMaxWidth: 200
                 });
-
                 myMap.behaviors.enable('scrollZoom'); //управление зумом по скроллу
                 myMap.controls.add('typeSelector')      //типы карты          
                 .add('smallZoomControl', { right: 5, top: 75 }) //управление зумом с координатами
                 .add('mapTools') //набор кнопок
-                .add(new ymaps.control.ScaleLine()) //линейка масштаба
-
+                .add(new ymaps.control.ScaleLine())
+                .add(new ymaps.control.SearchControl()) //линейка масштаба
                 //управление метками в зависимости от поведения
                 myMap.events.add('boundschange', function (event) {
                     if (event.get('newZoom') != event.get('oldZoom') || event.get('newCenter') != event.get('oldCenter')) {
                         getmarks();
                     }
-
                 });
-
                 //расставляем метки после загрузки карты
                 
                 getmarks();
-               
-                //выставление метки по клику
-                myMap.events.add('click', function (e) {
-                    if (!myMap.balloon.isOpen()) {
+
+                 myMap.events.add('click', function (e) {
+                  
                         var coords = e.get('coordPosition');
                         var lat=coords[0];
                          var long=coords[1];
+                         var marktext= $('#createtext').val();
+                         
+     
+                  });
+               
+            }
+            
 
-                         $.ajax({
-                                            type: "POST",
-                                         dataType: 'json',
-                                          data: {
+
+         $('#createmark').click(function(event){
+
+
+                   var theend=false;
+
+
+
+                   $('#labelmark').show();
+                   //удаляем все объекты
+                   myMap.geoObjects.each(function(context) {
+                       myMap.geoObjects.remove(context);
+                    });
+                   
+                   myMap.events.add('click', function (e) {
+                        if(theend===false){
+                        //удаляем все объекты
+                         myMap.geoObjects.each(function(context) {
+                           myMap.geoObjects.remove(context);
+                        });
+                        //получаем координаты клика
+                        var coords = e.get('coordPosition');
+                        
+                         
+                         //создаем метку
+                         myPlacemark=new ymaps.Placemark(coords, {
+                                                        balloonContent:'marktext',
+
+                                                    },
+                                                    {draggable: true} );
+                         //ставим метку
+
+                         myMap.geoObjects.add(myPlacemark);
+
+                         
+                         
+
+                         $('#okmark').click(function(){
+                            //присваиваем координаты того места, где в итоге оказалась метка
+                            newcoord= myPlacemark.geometry.getCoordinates();
+                             var lat=newcoord[0];
+                             var long=newcoord[1];
+                             var marktext="no status"; 
+                             if($('#createtext').val()!=''){
+                                marktext=$('#createtext').val();
+                             }
+                         
+                                $.ajax({
+                                        type: "POST",
+                                        dataType: 'json',
+                                        data: {
+
                                         lat: lat,
                                         long: long,
+                                        marktext: marktext,
                                         _csrf : '<?=Yii::$app->request->getCsrfToken()?>'
                                          },
                                             url: '<?php echo Yii::$app->request->baseUrl. '/mark/markupdate' ?>',
                                           success: function(model){
-                                            
-                                            myMap.geoObjects.add(new ymaps.Placemark(coords, {
-                                                        balloonContent: "Я здесь", 
-                                                    }));
-                                            console.log(myMap.geoObjects);
+                                            myMap.geoObjects.each(function(context) {
+                                               myMap.geoObjects.remove(context);
+                                            });  
+                                             $('#labelmark').hide();    
+                                              getmarks();
                                          },
                                   });
-                          
-                         
-                    }
-                    else {
-                        myMap.balloon.close();
-                    }
-                });
+                           
+                            theend=true;
 
-            }
+                         });}
+
+
+                  }); 
+            }); 
+
    </script>
     
  <div id="map" style="width:600px; height:600px"></div>
-  
-
-
-        
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            //'user_id',
-            'lat',
-            'long',
-            'status_text',
-            // 'get_date',
-
-         //   ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
-   
+     
 
 </div>
