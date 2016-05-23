@@ -75,6 +75,19 @@ class Mark extends \yii\db\ActiveRecord
         $this->get_date=date('Y-m-d H:i:s');
         $this->save();
     }
-   
+    public function updateMark(){
+        $this->long=Yii::$app->request->post('long');
+                $this->lat=Yii::$app->request->post('lat');
+                $this->status_text=Yii::$app->request->post('marktext');
+                $this->save();
+    }
+   public function createMark(){
+            $this->user_id=Yii::$app->user->identity->id;
+            $this->long=Yii::$app->request->post('long');
+            $this->lat=Yii::$app->request->post('lat');
+            $this->status_text=Yii::$app->request->post('marktext');
+            $this->insert();
+    }
+    
 }
 

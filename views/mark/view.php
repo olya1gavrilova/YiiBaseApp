@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php if($model):?>
-      <?=$model->status_text;?>
+    <p id='status_text'><?=$model->status_text;?> </p>
     <?php endif?>  
 
    
@@ -209,9 +209,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                             myMap.geoObjects.each(function(context) {
                                                myMap.geoObjects.remove(context);
                                             });  
-                                             $('#labelmark').hide();    
+                                             $('#labelmark').hide(); 
+                                             $('#status_text').html(marktext);     
                                             marknew=true;
                                             getmarks();
+
                                          },
                                   });
                            
