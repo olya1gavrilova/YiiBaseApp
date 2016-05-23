@@ -49,17 +49,39 @@ $this->params['breadcrumbs'][] = $this->title;
     <script src="//yandex.st/jquery/2.1.0/jquery.min.js" type="text/javascript"></script>
    
    
+   Показывать:<br /> 
+
+    <input type="radio" name="show" <?php if($sex==8):?>checked="checked"<?php endif?> value="9">Девушек<Br />
+   <input type="radio" name="show" <?php if($sex==9):?>checked="checked"<?php endif?> value="8">Мужчин<Br/>
+   <input type="radio" name="show" value="both">Девушей и мужчин<Br />
+   
+    <?=Html::submitButton('Отправить', ['class' => 'btn btn-success btn-lg', 'id' => 'submit', 'type'=>'submit']) ?>
+  
+
 
   <script type="text/javascript">   
              ymaps.ready(init);
             var myMap;
-          
+
+            function checkIt() {
+                 theGroup = document.theForm.gender;
+                 for (i=0; i< theGroup.length; i++) {
+                     if (theGroup[i].checked) {
+                         alert("The value is " + theGroup[i].value);
+                         break;
+                     }
+                }
+            }
+
             function getmarks(){
                 var cornercoord=myMap.getBounds();
                          var leftlat=cornercoord[0][0];
                          var leftlong=cornercoord[0][1];
                          var rightlat=cornercoord[1][0];
                          var rightlong=cornercoord[1][1];
+                         
+                         var sex = $('input[name=show]:checked').val();
+                        
                          
                          $.ajax({
                                             type: "POST",
@@ -69,6 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         leftlong:leftlong,
                                         rightlat:rightlat,
                                         rightlong:rightlong,
+                                        sex:sex,
                                         _csrf : '<?=Yii::$app->request->getCsrfToken()?>'
                                          },
                                             url: '<?php echo Yii::$app->request->baseUrl. '/mark/markupdate' ?>',
@@ -110,7 +133,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                          },
                                });
                 }
-                                                /**/
+              
+
+                                           /**/
             function init () {
                 myMap = new ymaps.Map("map", {
                     center: [59.95, 30.3061], // СПБ
@@ -146,7 +171,14 @@ $this->params['breadcrumbs'][] = $this->title;
                
             }
         
+        $('#submit').click(function(){
+           myMap.geoObjects.each(function(context) {
+                       myMap.geoObjects.remove(context);
+                    });
+           
+            getmarks();
 
+        });
             
 
 

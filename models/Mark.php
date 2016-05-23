@@ -68,7 +68,7 @@ class Mark extends \yii\db\ActiveRecord
     {
        $lastweek=time()-7*24*60*60;
        $date=date(('Y-m-d H:i:s'),$lastweek);
-       return Mark::find()->where(['>','get_date', $date ]);
+       return Mark::find()->where(['>','get_date', $date]);
     }
     
     public function activateMark(){

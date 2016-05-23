@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 
 use yii\web\ForbiddenHttpException;
 use yii\helpers\Json;
+use app\models\Profile;
+
 
 /**
  * MarkController implements the CRUD actions for Mark model.
@@ -64,9 +66,7 @@ class MarkController extends Controller
             return $this->render('view', [
                 'model' => $this->findModel($id),
                 'dataProvider'=>$dataProvider,
-                
-                
-                
+                'sex'=>Profile::findOne(['user_id'=>$id])->sex,             
             ]);
         }
         else{
@@ -202,14 +202,28 @@ class MarkController extends Controller
             $leftlong= Yii::$app->request->post('leftlong');
             $rightlat=Yii::$app->request->post('rightlat');
             $rightlong=Yii::$app->request->post('rightlong');
-
-             $marks=Mark::findMarks()
+            $sex=Yii::$app->request->post('sex');
+            $marks2=Mark::findMarks()
                 ->andwhere(['>','lat',$leftlat])
                 ->andwhere(['<','lat',$rightlat])
                 ->andwhere(['>','long',$leftlong])
                 ->andwhere(['<','long',$rightlong])
                 ->asArray()->all();
-          echo Json::encode($marks);
+
+                //условие получения меток исходя из пола
+            if($sex!='both'){
+                    foreach ($marks2 as $mark):
+                        $id=$mark['user_id'];
+                        if(Profile::findOne(['user_id'=>$id])->sex==$sex){
+                                    $marks[]=$mark;
+                                }
+                     endforeach;
+                     
+            }
+            else{
+                $marks=$marks2;
+            }
+            echo Json::encode($marks);
        }
     }
 
