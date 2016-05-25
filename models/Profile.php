@@ -90,4 +90,18 @@ class Profile extends \yii\db\ActiveRecord
                 $items2=[];
         }
     }
+
+   public function findProfile($id){
+    $profile=Profile::findOne(['user_id'=>$id]);
+        if($profile!==null){
+            return $profile;
+        }
+        else{
+            $profile= new Profile;
+            $profile->user_id=$id;
+            $profile->insert();
+            return findProfile();
+            }
+    }
+
 }

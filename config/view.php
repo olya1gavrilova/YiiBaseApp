@@ -16,47 +16,31 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php if($model):?>
     <p id='status_text'><?=$model->status_text;?> </p>
     <?php endif?>  
-    <br/>
-    <div class='row'>
-            <div class="col-md-3">
-                Показывать:<br /> 
 
-                <input type="radio" name="show" <?php if($sex==8):?>checked="checked"<?php endif?> value="9"> Девушек<Br />
-               <input type="radio" name="show" <?php if($sex==9):?>checked="checked"<?php endif?> value="8"> Мужчин<Br/>
-               <input type="radio" name="show" <?php if($sex!==9 && $sex!==8):?>checked="checked"<?php endif?> value="both"> Девушек и мужчин<Br /><br />
-               
-                <?=Html::submitButton('Отправить', ['class' => 'btn btn-info btn-xs', 'id' => 'submit', 'type'=>'submit']) ?>
-                
-                
+   
+    <p>
+        <?php if(!$model):?>
+             <?= Html::submitButton('Поставить метку',['class' => 'btn btn-success btn-lg', 'id' => 'createmark']) ?>
+        <?php else:?>
+            <?=  $model->activeMark() ?
+             Html::submitButton('Изменить', ['class' => 'btn btn-success btn-lg', 'id' => 'createmark'] ) : 
+             Html::a('Активировать', ['activate', 'id' => $model->user_id], ['class' => 'btn btn-default btn-lg', 'id' => 'createmark']) ?>
+            <?= Html::a('Удалить', ['delete', 'id' => $model->user_id], [
+                'class' => 'btn btn-danger btn-xs col-sm-offset-2',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        
+         <?php endif?>
+           <div id='labelmark'  style='display: none; width:80%'> Напишите текст статуcа:<br />
+            <input type="text" required  maxlength="255" id='createtext' >
+            <?= Html::submitButton('Сохранить',['class' => 'btn btn-success btn-xs', 'id' => 'okmark', ]) ?><br />
+            Отметьте кликом своё местоположение: <br />
             </div>
-
-           <div class="col-md-6"><p>
-                <?php if(!$model):?>
-                     <?= Html::submitButton('Поставить метку',['class' => 'btn btn-success btn-lg', 'id' => 'createmark']) ?>
-                <?php else:?>
-                    <?=  $model->activeMark() ?
-                     Html::submitButton('Изменить', ['class' => 'btn btn-success btn-lg', 'id' => 'createmark'] ) : 
-                     Html::a('Активировать', ['activate', 'id' => $model->user_id], ['class' => 'btn btn-default btn-lg', 'id' => 'createmark']) ?>
-                    <?= Html::a('Удалить', ['delete', 'id' => $model->user_id], [
-                        'class' => 'btn btn-danger btn-xs col-sm-offset-2',
-                        'data' => [
-                            'confirm' => 'Are you sure you want to delete this item?',
-                            'method' => 'post',
-                        ],
-                    ]) ?>
-                
-                 <?php endif?>
-                   <div id='labelmark'  style='display: none; width:80%'> Напишите текст статуcа:<br />
-                    <input type="text" required  maxlength="255" id='createtext' >
-                    <?= Html::submitButton('Сохранить',['class' => 'btn btn-success btn-xs', 'id' => 'okmark', ]) ?><br />
-                    Отметьте кликом своё местоположение: <br />
-                    </div>
-                
-            </p>
-            </div> 
-
-             
-    </div>
+        
+    </p>
 
    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -65,7 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <script src="//yandex.st/jquery/2.1.0/jquery.min.js" type="text/javascript"></script>
    
    
+   Показывать:<br /> 
+
+    <input type="radio" name="show" <?php if($sex==8):?>checked="checked"<?php endif?> value="9">Девушек<Br />
+   <input type="radio" name="show" <?php if($sex==9):?>checked="checked"<?php endif?> value="8">Мужчин<Br/>
+   <input type="radio" name="show" value="both">Девушей и мужчин<Br />
    
+    <?=Html::submitButton('Отправить', ['class' => 'btn btn-success btn-lg', 'id' => 'submit', 'type'=>'submit']) ?>
   
 
 

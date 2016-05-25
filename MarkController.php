@@ -180,7 +180,7 @@ class MarkController extends Controller
     return parent::beforeAction($action);
     }*/
 
-    public function actionMarkupdate(){
+   public function actionMarkupdate(){
         $id= Yii::$app->user->identity->id;
         $model = Mark::findOne(['user_id'=>$id]);
        
@@ -214,11 +214,14 @@ class MarkController extends Controller
             if($sex!='both'){
                     foreach ($marks2 as $mark){
                         $id=$mark['user_id'];
-                        $s = Profile::findProfile($id)->sex;
+                        $s = Profile::findOne(['user_id'=>$id])->sex;
+                        var_dump($s);
                         if($s && $s==$sex){
                                     $marks[]=$mark;
                         }
-                    }                    
+
+                     }
+                     
             }
             else{
                 $marks=$marks2;
@@ -226,6 +229,7 @@ class MarkController extends Controller
             echo Json::encode($marks);
        }
     }
+
 
 
 }

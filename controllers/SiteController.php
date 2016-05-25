@@ -36,12 +36,15 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $comments=Comments::find()->where(['post_id'=>$post->id])->andWhere(['status'=>'publish'])->count();
-
+        
         $posts=Post::isPublished()->orderBy('publish_date DESC')->limit(3)->all();
+        foreach($posts as $post){
+            $comments=Comments::find()->where(['post_id'=>$post->id])->andWhere(['status'=>'publish'])->count();
+
+        }
 
         return $this->render('index', [
-            'model' => $model,
+         //   'model' => $model,
             'comments' => $comments,
             'posts'=>$posts,
         ]);
