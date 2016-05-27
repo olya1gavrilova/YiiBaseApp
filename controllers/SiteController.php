@@ -37,16 +37,10 @@ class SiteController extends Controller
     public function actionIndex()
     {
         
-        $posts=Post::isPublished()->orderBy('publish_date DESC')->limit(3)->all();
-        foreach($posts as $post){
-            $comments=Comments::find()->where(['post_id'=>$post->id])->andWhere(['status'=>'publish'])->count();
-
-        }
+        $user= Yii::$app->user->isGuest? 'guest' : 'notguest';
 
         return $this->render('index', [
-         //   'model' => $model,
-            'comments' => $comments,
-            'posts'=>$posts,
+                     'user' => $user,
         ]);
     }
 

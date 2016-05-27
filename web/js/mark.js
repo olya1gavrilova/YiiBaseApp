@@ -1,85 +1,5 @@
-<?php
-use yii\helpers\Html;
-use yii\widgets\DetailView;
-use yii\grid\GridView;
-use yii\widgets\Pjax;
-use yii\helpers\Url;
-use yii\web\UrlManager;
-/* @var $this yii\web\View */
-/* @var $model app\models\Mark */
- ;if(!Yii::$app->user->isGuest):
-$this->title = $model->user->username;
-$this->params['breadcrumbs'][] = $this->title;
-endif;
-?>
-<div class="mark-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php if($model):?>
-    <p id='status_text'><?=$model->status_text;?> </p>
-    <?php endif?>  
-    <br/>
-   <?php if(!Yii::$app->user->isGuest):?>
-    <div class='row'>
-            <div class="col-md-3">
-                Показывать:<br /> 
-
-                <input type="radio" name="show" <?php if($sex==8):?>checked="checked"<?php endif?> value="9"> Девушек<Br />
-               <input type="radio" name="show" <?php if($sex==9):?>checked="checked"<?php endif?> value="8"> Мужчин<Br/>
-               <input type="radio" name="show" <?php if($sex!==9 && $sex!==8):?>checked="checked"<?php endif?> value="both"> Девушек и мужчин<Br /><br />
-               
-                <?=Html::submitButton('Отправить', ['class' => 'btn btn-info btn-xs', 'id' => 'submit', 'type'=>'submit']) ?>
-                
-                
-            </div>
-
-           <div class="col-md-6"><p>
-                <?php if(!$model):?>
-                     <?= Html::submitButton('Поставить метку',['class' => 'btn btn-success btn-lg', 'id' => 'createmark']) ?>
-                <?php else:?>
-                    <?=  $model->activeMark() ?
-                     Html::submitButton('Изменить', ['class' => 'btn btn-success btn-lg', 'id' => 'createmark'] ) : 
-                     Html::a('Активировать', ['activate', 'id' => $model->user_id], ['class' => 'btn btn-default btn-lg', 'id' => 'createmark']) ?>
-                    <?= Html::a('Удалить', ['delete', 'id' => $model->user_id], [
-                        'class' => 'btn btn-danger btn-xs col-sm-offset-2',
-                        'data' => [
-                            'confirm' => 'Are you sure you want to delete this item?',
-                            'method' => 'post',
-                        ],
-                    ]) ?>
-                
-                 <?php endif?>
-                   <div id='labelmark'  style='display: none; width:80%'> Напишите текст статуcа:<br />
-                    <input type="text" required  maxlength="255" id='createtext' >
-                    <?= Html::submitButton('Сохранить',['class' => 'btn btn-success btn-xs', 'id' => 'okmark', ]) ?><br />
-                    Отметьте кликом своё местоположение: <br />
-                    </div>
-                
-            </p>
-            </div> 
-
-       <?php endif?>     
-         <div id="info" style='margin: 0 28%; padding: 5%; background: rgba(255,255,255,0.8); border-radius: 20px; position: fixed; z-index: 2000; display: none'><h2>Для получения информации зарегистрируйтесь на сайте</h2>
-       <p> <?=Html::a('Зарегистрироваться', Url::to('user/create'), ['class'=>'btn btn-success']); ?> </p>
-    </div> 
-    </div>
-
-   
-   
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-   <script src="//api-maps.yandex.ru/2.0/?load=package.standard,package.geoObjects&lang=ru-RU" type="text/javascript"></script>
-
-    <script src="//yandex.st/jquery/2.1.0/jquery.min.js" type="text/javascript"></script>
-   
-   
-   
-  
-
-
-  <script type="text/javascript">   
-             ymaps.ready(init);
+ymaps.ready(init);
             var myMap;
-            var user='<?= $user?>'; 
 
             function checkIt() {
                  theGroup = document.theForm.gender;
@@ -97,8 +17,8 @@ endif;
                          var leftlong=cornercoord[0][1];
                          var rightlat=cornercoord[1][0];
                          var rightlong=cornercoord[1][1];
-                                                 
-                         var sex = $('input[name=show]:checked').val() ? $('input[name=show]:checked').val() : 'both';
+                         
+                         var sex = $('input[name=show]:checked').val();
                         
                          
                          $.ajax({
@@ -121,21 +41,9 @@ endif;
                                               $(marks).each(function(){
                                                   coord=[this.lat, this.long];
                                                         //и расставлем их на карту
-                                                        if(user!=='guest'){
-                                                                    //если перебор не прервался, выставляется метка
-                                                                    myMap.geoObjects.add(new ymaps.Placemark(coord, {
-                                                                            
-                                                                            balloonContent: this.status_text,
-                                                                        
-                                                                        }));
-                                                                }
-                                                                else{
-                                                                    myMap.geoObjects.add(new ymaps.Placemark(coord, {
-                                                                            
-                                                                            balloonContent: "Для получения информации зарегистрируйтесь на сайте",
-                                                                        
-                                                                        }));
-                                                                }                                                   
+                                                          myMap.geoObjects.add(new ymaps.Placemark(coord, {
+                                                            balloonContent: this.status_text, 
+                                                        }));                                                   
                                                      
                                                   
                                              });
@@ -153,22 +61,10 @@ endif;
                                                                //прерываем перебор
                                                                     return false;
                                                                 }
-                                                                if(user!=='guest'){
-                                                                    //если перебор не прервался, выставляется метка
-                                                                    myMap.geoObjects.add(new ymaps.Placemark(coord, {
-                                                                            
-                                                                            balloonContent: text,
-                                                                        
-                                                                        }));
-                                                                }
-                                                                else{
-                                                                    myMap.geoObjects.add(new ymaps.Placemark(coord, {
-                                                                            
-                                                                            balloonContent: "Для получения информации зарегистрируйтесь на сайте",
-                                                                        
-                                                                        }));
-                                                                }
-                                                                
+                                                                //если перебор не прервался, выставляется метка
+                                                                myMap.geoObjects.add(new ymaps.Placemark(coord, {
+                                                                        balloonContent:  text, 
+                                                                    }));
                                                         });
                                                         });
                                                   }
@@ -179,22 +75,12 @@ endif;
 
                                            /**/
             function init () {
-                if(user!='guest'){
-                    myMap = new ymaps.Map("map", {
-                        center: [59.95, 30.3061], // СПБ
-                        zoom: 14
-                    }, {
-                        balloonMaxWidth: 200
-                    });
-                }
-                else{
-                    myMap = new ymaps.Map("map", {
+                myMap = new ymaps.Map("map", {
                     center: [59.95, 30.3061], // СПБ
-                    zoom: 12
+                    zoom: 14
                 }, {
                     balloonMaxWidth: 200
                 });
-                }
                 myMap.behaviors.enable('scrollZoom'); //управление зумом по скроллу
                 myMap.controls.add('typeSelector')      //типы карты          
                 .add('smallZoomControl', { right: 5, top: 75 }) //управление зумом с координатами
@@ -232,11 +118,6 @@ endif;
 
         });
             
-        //if(user=='guset'){
-        $('.left').click(function(){
-                $('#info').fadeIn(1500);
-            });
-      // }
 
 
          $('#createmark').click(function(event){
@@ -314,12 +195,3 @@ endif;
                   }); 
             }); 
 
-
-   </script>
-    
- <div id="map" style="width:700px; height: 700px;
- margin: 0 auto"></div>
-
-     
-
-</div>

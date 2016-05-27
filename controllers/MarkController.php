@@ -62,7 +62,7 @@ class MarkController extends Controller
                     ],
             ]);
             
-            
+            //$this->view->registerJsFile('js/mark.js');
             return $this->render('view', [
                 'model' => $this->findModel($id),
                 'dataProvider'=>$dataProvider,

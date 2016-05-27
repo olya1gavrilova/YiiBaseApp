@@ -68,41 +68,8 @@ AppAsset::register($this);
     
     <div class="container">
    
-            <div class="left col-sm-2">
+            <div class="left">
             
-                 <?php
-                 $items=[];
-                 foreach (Category::find()->all() as $category) {
-                     $items[]= ['label' => $category->title, 'url' => ['category/view', 'id'=>$category->id]];
-                 }
-                    
-                        echo Nav::widget([
-                        'options' => ['class' => 'nav-pills nav-stacked'],
-                         'items' => $items,
-                        ]);
-                   
-                    ?>
-                <br />
-                <h5><strong>Новые комментарии</strong></h5>
-
-                <br /><br />
-
-                <?php foreach(Comments::find()->where(['status'=>'publish'])->OrderBy('date DESC')->limit(3)->all() as $comment):?>
-                <?=Html::a(Post::find()->where(['id'=>$comment->post_id])->one()->title, Url::to(['post/view', 'id'=>$comment->post_id]))?>
-                <br />
-                
-                Коммент от <b><?=$comment->auth_nick?>:</b>
-
-                <br /><br />
-
-                <?=StringHelper::truncateWords($comment->text, 5)?>
-                <hr/>
-            
-                <?php endforeach?>
-
-            </div><!--end left-->
-
-        <div class="left col-sm-10">
                 <?= Breadcrumbs::widget([
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ]) ?>
